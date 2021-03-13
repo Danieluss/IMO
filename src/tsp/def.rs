@@ -11,7 +11,8 @@ pub struct City {
 }
 
 pub struct TSPSolution {
-    pub permutation: Vec<usize>
+    pub perm_a: Vec<usize>,
+    pub perm_b: Vec<usize>
 }
 
 impl Solution for TSPSolution {}
@@ -25,33 +26,50 @@ pub struct TSPInstance {
 }
 
 impl TSPInstance {
-    fn calc_dist_matrix(&mut self) {
+    pub fn dist_c(&self, a: &City, b: &City) -> f32 {
+        self.distance_cache[a.id][b.id]
+    }
+
+    pub fn dist_k(&self, a: usize, b: usize) -> f32 {
+        self.distance_cache[a][b]
+    }
+
+    pub fn calc_dist_matrix(&mut self) {
         for i in 0..self.dimension {
             self.distance_cache.push(Vec::new());
             for j in 0..self.dimension {
-                let distance = ((self.cities[i].x - self.cities[j].x).powi(2) + (self.cities[i].y - self.cities[j].y).powi(2)).sqrt();
+                let distance = ((self.cities[i].x - self.cities[j].x).powi(2)
+                    + (self.cities[i].y - self.cities[j].y).powi(2))
+                    .sqrt()
+                    .round();
                 self.distance_cache[i].push(distance)
             }
         }
+    }
+
+    fn eval_permutation(&self, perm: &Vec<usize>) -> f32{
+        let mut acc: f32 = 0.;
+        for i in 0..perm.len() {
+            acc += self.dist_k(perm[i], perm[(i + 1) % perm.len()]);
+        }
+        acc
     }
 }
 
 impl Instance<TSPSolution> for TSPInstance {
     fn eval(&self, solution: &TSPSolution) -> f32 {
-        if self.dimension != solution.permutation.len() {
+        if self.dimension != (solution.perm_a.len() + solution.perm_b.len()) {
             panic!("Solution of inadequate size was given")
         }
-        let permutation = &solution.permutation;
-        let mut acc: f32 = 0.;
-        for i in 0..self.dimension {
-            acc += self.dist_k(permutation[i], permutation[(i + 1) % self.dimension]);
-        }
-        acc
+        self.eval_permutation(&solution.perm_a) +
+            self.eval_permutation(&solution.perm_b)
     }
 
     fn random_solution(&self) -> TSPSolution {
+        let perm = random_permutation(self.dimension);
         TSPSolution {
-            permutation: random_permutation(self.dimension)
+            perm_a: perm[..(perm.len() + 1)/2].to_vec(),
+            perm_b: perm[(perm.len() + 1)/2..].to_vec()
         }
     }
 
@@ -100,16 +118,6 @@ impl Instance<TSPSolution> for TSPInstance {
 
         instance.calc_dist_matrix();
         instance
-    }
-}
-
-impl TSPInstance {
-    fn dist_c(&self, a: &City, b: &City) -> f32 {
-        self.distance_cache[a.id][b.id]
-    }
-
-    fn dist_k(&self, a: usize, b: usize) -> f32 {
-        self.distance_cache[a][b]
     }
 }
 

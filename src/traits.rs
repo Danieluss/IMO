@@ -11,6 +11,6 @@ pub trait MetaInstance<O>: Instance<O> where O: Solution {
     fn neighbours(solution: &O) -> Vec<O>;
 }
 
-trait Solver<I, O> where I: Instance<O>, O: Solution {
-    fn solve(&self, instance: &I) -> O;
+pub trait Solver<I, O> where I: Instance<O>, O: Solution {
+    fn solve(instance: &I) -> O;
 }

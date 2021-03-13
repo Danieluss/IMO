@@ -21,11 +21,11 @@ cargo run
 Performance tests should generate results.
 ```
 # run all tests
-cargo test
+cargo test -- --nocapture
 # run perf tests
-cargo test --test perf_test
+cargo test --test perf_test -- --nocapture
 # run unit tests
-cargo test --test unit_test
+cargo test --test unit_test -- --nocapture
 ```
 
 #### Tutorial
