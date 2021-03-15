@@ -17,6 +17,15 @@ pub struct TSPSolution {
 
 impl Solution for TSPSolution {}
 
+impl Clone for TSPSolution {
+    fn clone(&self) -> Self {
+        TSPSolution {
+            perm_a: self.perm_a.clone(),
+            perm_b: self.perm_b.clone()
+        }
+    }
+}
+
 #[derive(Default, Debug)]
 pub struct TSPInstance {
     pub name: String,

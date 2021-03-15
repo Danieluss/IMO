@@ -5,7 +5,6 @@ mod tests {
     use imo::traits::{Instance, Solver};
     use imo::tsp::random_solver::RandomSolver;
     use imo::tsp::solver::GreedySolver;
-    use imo::tsp::picker::Picker;
     use imo::tsp::pickers::nearest_picker::NearestPicker;
     use imo::tsp::pickers::cycle_picker::CyclePicker;
     use imo::tsp::pickers::regret_picker::RegretPicker;
@@ -27,7 +26,7 @@ mod tests {
     #[test]
     fn nearest_greedy_test() {
         let instance = TSPInstance::parse_file("data/kroA100.tsp");
-        let solver = GreedySolver::new(NearestPicker::add_both);
+        let solver = GreedySolver::new(Box::new(NearestPicker));
         let solution = solver.solve(0, &instance);
         println!("Nearest: {}", instance.eval(&solution));
         check_all_nodes(&solution.perm_a, &solution.perm_b, 100);
@@ -36,7 +35,7 @@ mod tests {
     #[test]
     fn cycle_greedy_test() {
         let instance = TSPInstance::parse_file("data/kroA100.tsp");
-        let solver = GreedySolver::new(CyclePicker::add_both);
+        let solver = GreedySolver::new(Box::new(CyclePicker));
         let solution = solver.solve(0, &instance);
         println!("Cycle: {}", instance.eval(&solution));
         check_all_nodes(&solution.perm_a, &solution.perm_b, 100);
@@ -45,7 +44,7 @@ mod tests {
     #[test]
     fn cycle_simultaneous_greedy_test() {
         let instance = TSPInstance::parse_file("data/kroA100.tsp");
-        let solver = GreedySolver::new(CycleSimultaneousPicker::add_both);
+        let solver = GreedySolver::new(Box::new(CycleSimultaneousPicker));
         let solution = solver.solve(0, &instance);
         println!("Cycle: {}", instance.eval(&solution));
         check_all_nodes(&solution.perm_a, &solution.perm_b, 100);
@@ -54,7 +53,7 @@ mod tests {
     #[test]
     fn regret_greedy_test() {
         let instance = TSPInstance::parse_file("data/kroA100.tsp");
-        let solver = GreedySolver::new(RegretPicker::add_both);
+        let solver = GreedySolver::new(Box::new(RegretPicker));
         let solution = solver.solve(0, &instance);
         println!("Regret: {}", instance.eval(&solution));
         check_all_nodes(&solution.perm_a, &solution.perm_b, 100);

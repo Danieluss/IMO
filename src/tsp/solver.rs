@@ -1,22 +1,19 @@
-use crate::traits::Instance;
-use crate::traits::Solution;
 use crate::traits::Solver;
 use crate::tsp::def::{TSPInstance, TSPSolution};
 use crate::tsp::partial_path::PartialPath;
 use crate::tsp::picker::Picker;
-use std::collections::{LinkedList, HashSet};
 use rand::Rng;
 
 
 
 pub struct GreedySolver {
-    add_both: fn(&mut PartialPath, &mut PartialPath, &mut Vec<bool>)
+    picker: Box<dyn Picker>,
 }
 
 impl GreedySolver {
-    pub fn new(add_both: fn(&mut PartialPath, &mut PartialPath, &mut Vec<bool>)) -> GreedySolver {
+    pub fn new(picker: Box<dyn Picker>) -> GreedySolver {
         GreedySolver {
-            add_both
+            picker
         }
     }
 
@@ -53,7 +50,6 @@ impl GreedySolver {
 impl Solver<TSPInstance, TSPSolution> for GreedySolver{
     fn solve(&self, start_vertex: usize, instance: &TSPInstance, ) -> TSPSolution {
         let max = GreedySolver::remote(start_vertex, instance);
-        println!("{}, {}, {}", max.0, max.1, max.2);
         let n: usize = instance.dimension;
         let mut visited = vec![false; n];
         visited[max.1] = true;
@@ -70,7 +66,7 @@ impl Solver<TSPInstance, TSPSolution> for GreedySolver{
         // TODO: warto zrobić wersję, że wybieramy dwa wierzchołki na raz (minimalna sumaryczna odległość do powstających cykli)?
         // TODO: Może jakieś clusterowanie (możliwie najlepiej dzielimy na dwa równe podzbiory, a dopiero potem w ich obrębie wyznaczamy najlepsze cykle)
         while partial_a.vec.len() + partial_b.vec.len() < n {
-            (self.add_both)(&mut partial_a, &mut partial_b, &mut visited);
+            self.picker.add_both(&mut partial_a, &mut partial_b, &mut visited);
         }
 
         TSPSolution {

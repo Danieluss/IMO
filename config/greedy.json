@@ -1,24 +1,31 @@
 {
-    "files": ["kroA100.tsp", "kroB100.tsp"],
+    "instances": ["kroA100.tsp", "kroB100.tsp"],
     "algorithms": [
         {
-            "solver": "Random"
+            "solver": "Random",
+            "name": "Random"
         },
         {
             "solver": "Greedy",
-            "picker": "Nearest"
+            "picker": "Nearest",
+            "name": "Greedy-Nearest"
         },
         {
             "solver": "Greedy",
-            "picker": "Cycle"
+            "picker": "Cycle",
+            "name": "Greedy-Cycle"
         },
         {
             "solver": "Greedy",
-            "picker": "CycleSimultaneous"
+            "picker": "CycleSimultaneous",
+            "name": "Greedy-CycleSimultaneous"
         },
         {
             "solver": "Greedy",
-            "picker": "Regret"
+            "picker": "Regret",
+            "name": "Greedy-Regret"
         }
-    ]
+    ],
+    "table": "table_greedy",
+    "plots": "plots_greedy"
 }

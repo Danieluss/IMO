@@ -4,14 +4,14 @@ use crate::tsp::partial_path::PartialPath;
 pub struct NearestPicker;
 
 impl Picker for NearestPicker {
-    fn add_both(partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
-        NearestPicker::add(partial_path_a, visited);
-        NearestPicker::add(partial_path_b, visited);
+    fn add_both(&self, partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
+        self.add(partial_path_a, visited);
+        self.add(partial_path_b, visited);
     }
 }
 
 impl NearestPicker {
-    fn add(partial_path: &mut PartialPath<'_>, visited: &mut std::vec::Vec<bool>) {
+    fn add(&self, partial_path: &mut PartialPath<'_>, visited: &mut std::vec::Vec<bool>) {
         let mut min = (f32::MAX, 0);
         let n = partial_path.instance.dimension;
         for i in 0..n {

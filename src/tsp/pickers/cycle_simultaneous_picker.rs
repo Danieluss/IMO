@@ -4,9 +4,9 @@ use crate::tsp::partial_path::PartialPath;
 pub struct CycleSimultaneousPicker;
 
 impl Picker for CycleSimultaneousPicker {
-    fn add_both(partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
-        let cost_a = CycleSimultaneousPicker::get_costs(partial_path_a, visited);
-        let cost_b = CycleSimultaneousPicker::get_costs(partial_path_b, visited);
+    fn add_both(&self, partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
+        let cost_a = self.get_costs(partial_path_a, visited);
+        let cost_b = self.get_costs(partial_path_b, visited);
         let n = visited.len();
         let mut min_pair = (f32::MAX, 0, 0);
         for i in 0..n {
@@ -29,7 +29,7 @@ impl Picker for CycleSimultaneousPicker {
 }
 
 impl CycleSimultaneousPicker {
-    pub fn get_costs(partial_path: &mut PartialPath, visited: &mut Vec<bool>) -> Vec<(f32, usize)> {
+    pub fn get_costs(&self, partial_path: &mut PartialPath, visited: &mut Vec<bool>) -> Vec<(f32, usize)> {
         let n = partial_path.instance.dimension;
         let mut min_increase: Vec<(f32, usize)> = Vec::new();
         for j in 0..n {

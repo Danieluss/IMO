@@ -5,17 +5,18 @@ use crate::tsp::pickers::cycle_picker::CyclePicker;
 pub struct RegretPicker;
 
 impl Picker for RegretPicker {
-    fn add_both(partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
-        RegretPicker::add(partial_path_a, visited);
-        RegretPicker::add(partial_path_b, visited);
+    fn add_both(&self, partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
+        self.add(partial_path_a, visited);
+        self.add(partial_path_b, visited);
     }
 }
 
 impl RegretPicker {
-    fn add(partial_path: &mut PartialPath, visited: &mut Vec<bool>) {
+    fn add(&self, partial_path: &mut PartialPath, visited: &mut Vec<bool>) {
         let n = partial_path.instance.dimension;
         if partial_path.vec.len() < 3 {
-            CyclePicker::add(partial_path, visited);
+            let picker = CyclePicker::new();
+            picker.add(partial_path, visited);
             return;
         }
         let mut max_regret = (-1.0, 0, 0);

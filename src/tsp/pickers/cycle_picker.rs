@@ -4,14 +4,17 @@ use crate::tsp::partial_path::PartialPath;
 pub struct CyclePicker;
 
 impl Picker for CyclePicker {
-    fn add_both(partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
-        CyclePicker::add(partial_path_a, visited);
-        CyclePicker::add(partial_path_b, visited);
+    fn add_both(&self, partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
+        self.add(partial_path_a, visited);
+        self.add(partial_path_b, visited);
     }
 }
 
 impl CyclePicker {
-    pub fn add(partial_path: &mut PartialPath, visited: &mut Vec<bool>) {
+    pub fn new() -> CyclePicker{
+        CyclePicker
+    }
+    pub fn add(&self, partial_path: &mut PartialPath, visited: &mut Vec<bool>) {
         let n = partial_path.instance.dimension;
         let mut min = (f32::MAX, 0, 0);
         for i in 0..partial_path.vec.len() {
