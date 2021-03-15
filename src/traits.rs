@@ -2,7 +2,6 @@ pub trait Solution {}
 
 pub trait Instance<O> where O: Solution {
     fn eval(&self, solution: &O) -> f32;
-    fn random_solution(&self) -> O;
 
     fn parse_file(file_name: &str) -> Self;
 }
@@ -12,5 +11,5 @@ pub trait MetaInstance<O>: Instance<O> where O: Solution {
 }
 
 pub trait Solver<I, O> where I: Instance<O>, O: Solution {
-    fn solve(instance: &I) -> O;
+    fn solve(&self, start_vertex: usize, instance: &I) -> O;
 }

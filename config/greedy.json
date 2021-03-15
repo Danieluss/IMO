@@ -1,0 +1,24 @@
+{
+    "files": ["kroA100.tsp", "kroB100.tsp"],
+    "algorithms": [
+        {
+            "solver": "Random"
+        },
+        {
+            "solver": "Greedy",
+            "picker": "Nearest"
+        },
+        {
+            "solver": "Greedy",
+            "picker": "Cycle"
+        },
+        {
+            "solver": "Greedy",
+            "picker": "CycleSimultaneous"
+        },
+        {
+            "solver": "Greedy",
+            "picker": "Regret"
+        }
+    ]
+}

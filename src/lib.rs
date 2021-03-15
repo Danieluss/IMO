@@ -9,7 +9,17 @@ pub mod traits;
 pub mod tsp {
     pub mod def;
     pub mod solver;
+    pub mod random_solver;
+    pub mod partial_path;
+    pub mod picker;
+    pub mod solvers_factory;
+    pub mod pickers {
+        pub mod nearest_picker;
+        pub mod cycle_picker;
+        pub mod cycle_simultaneous_picker;
+        pub mod regret_picker;
+    }
 }
 
-mod utils;
+pub mod utils;
 

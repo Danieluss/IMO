@@ -1,6 +1,6 @@
 use crate::traits::Instance;
 use crate::traits::Solution;
-use crate::utils::{contents, random_permutation};
+use crate::utils::contents;
 
 #[derive(Debug)]
 pub struct City {
@@ -63,14 +63,6 @@ impl Instance<TSPSolution> for TSPInstance {
         }
         self.eval_permutation(&solution.perm_a) +
             self.eval_permutation(&solution.perm_b)
-    }
-
-    fn random_solution(&self) -> TSPSolution {
-        let perm = random_permutation(self.dimension);
-        TSPSolution {
-            perm_a: perm[..(perm.len() + 1)/2].to_vec(),
-            perm_b: perm[(perm.len() + 1)/2..].to_vec()
-        }
     }
 
     fn parse_file(file_name: &str) -> Self {
