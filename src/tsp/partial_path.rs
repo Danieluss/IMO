@@ -10,7 +10,6 @@ impl PartialPath<'_> {
         let n = self.vec.len() as i32;
         let prev = ((((pos as i32) - 1) % n + n) % n) as usize;
         let next = pos;
-        // println!("{} {} {} {}", prev, next, id, pos);
         - self.instance.dist_k(self.vec[prev], self.vec[next])
             + self.instance.dist_k(self.vec[prev], id) + self.instance.dist_k(id, self.vec[next])
     }

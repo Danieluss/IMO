@@ -63,7 +63,6 @@ impl Solver<TSPInstance, TSPSolution> for GreedySolver{
             vec: vec![max.2],
         };
 
-        // TODO: warto zrobić wersję, że wybieramy dwa wierzchołki na raz (minimalna sumaryczna odległość do powstających cykli)?
         // TODO: Może jakieś clusterowanie (możliwie najlepiej dzielimy na dwa równe podzbiory, a dopiero potem w ich obrębie wyznaczamy najlepsze cykle)
         while partial_a.vec.len() + partial_b.vec.len() < n {
             self.picker.add_both(&mut partial_a, &mut partial_b, &mut visited);

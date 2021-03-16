@@ -2,25 +2,11 @@ use crate::tsp::neighborhoods::transition::Transition;
 use crate::tsp::def::TSPSolution;
 use crate::tsp::def::TSPInstance;
 
-pub struct VertexTransition {
-    // cycle: usize,
-    // vertex_a: usize,
-    // vertex_b: usize,
-    // prev_cycle: usize,
-    // prev_vertex_a: usize,
-    // prev_vertex_b: usize
-}
+pub struct VertexTransition {}
 
 impl VertexTransition {
     pub fn new() -> VertexTransition {
-        VertexTransition {
-            // cycle: 0,
-            // vertex_a: 0,
-            // vertex_b: 1,
-            // prev_cycle: 0,
-            // prev_vertex_a: 0,
-            // prev_vertex_b: 0
-        }
+        VertexTransition {}
     }
     fn unpack_state(&self, state: usize, solution: &TSPSolution) -> Option<(usize, usize, usize)> {
         let mut state = state;
@@ -80,53 +66,4 @@ impl Transition for VertexTransition {
         perm[vertex_a] = perm[vertex_b];
         perm[vertex_b] = t;
     }
-
-    // fn next(&mut self, instance: &TSPInstance, solution: &TSPSolution) -> Option<f32> {
-    //     if self.cycle == 2 {
-    //         return None;
-    //     }
-    //     let perm = vec![&solution.perm_a, &solution.perm_b];
-    //     let (a_prev, a, a_next) = self.get_neighbors_in_cycle(self.vertex_a, perm[self.cycle]);
-    //     let (b_prev, b, b_next) = self.get_neighbors_in_cycle(self.vertex_b, perm[self.cycle]);
-    //     let delta = instance.dist_k(b_prev, a) + instance.dist_k(a, b_next)
-    //         + instance.dist_k(a_prev, b) + instance.dist_k(b, a_next)
-    //         - instance.dist_k(a_prev, a) - instance.dist_k(a, a_next)
-    //         - instance.dist_k(b_prev, b) - instance.dist_k(b, b_next);
-    //     self.prev_cycle = self.cycle;
-    //     self.prev_vertex_a = self.vertex_a;
-    //     self.prev_vertex_b = self.vertex_b;
-    //     self.vertex_b += 1;
-    //     if self.vertex_b == perm[self.cycle].len() {
-    //         self.vertex_a += 1;
-    //         self.vertex_b = self.vertex_a+1;
-    //         if self.vertex_a+1 == perm[self.cycle].len() {
-    //             self.cycle += 1;
-    //             self.vertex_a = 0;
-    //             self.vertex_b = 1;
-    //         }
-    //     }
-    //     return Some(delta)
-    // }
-    // fn random(&mut self, instance: &TSPInstance, solution: &TSPSolution) -> Option<f32> {
-    //     let mut rng = rand::thread_rng();
-    //     self.cycle = rng.gen_range(0..2);
-    //     let n = if self.cycle == 0 {solution.perm_a.len()} else {solution.perm_b.len()};
-    //     self.vertex_a = rng.gen_range(0..n);
-    //     self.vertex_b = rng.gen_range(0..n-1);
-    //     if self.vertex_b >= self.vertex_a {
-    //         self.vertex_b+=1;
-    //     }
-    //     self.next(instance, solution)
-    // }
-    // fn apply_last(&self, instance: &TSPInstance, solution: &mut TSPSolution) {
-        
-    // }
-    // fn reset(&mut self) {
-    //     self.cycle = 0;
-    //     self.vertex_a = 0;
-    //     self.vertex_b = 1;
-    //     self.prev_cycle = 0;
-    //     self.prev_vertex_a = 0;
-    //     self.prev_vertex_b = 0;
-    // }
 }
