@@ -1,0 +1,17 @@
+{
+    "instances": ["kroA100.tsp", "kroB100.tsp"],
+    "algorithms": [
+        {
+            "solver": "Local",
+            "type": "RandomWalker",
+            "transition": "Vertex",
+            "initial_solver": {
+                "solver": "Random"
+            },
+            "name": "Local-RandomWalker-Random-Edges"
+        }
+    ],
+    "iterations": 2,
+    "table": "table_local",
+    "plots": "plots_local"
+}

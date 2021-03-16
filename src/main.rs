@@ -24,7 +24,7 @@ fn main() {
         let instance = TSPInstance::parse_file(&filepath);
         for (i, algorithm) in config["algorithms"].members().enumerate() {
             let solver = SolversFactory::create_from_json(algorithm);
-            for k in 0..instance.dimension {
+            for k in 0..config["iterations"].as_usize().unwrap() {
                 let start = Instant::now();
                 let solution = solver.solve(k, &instance);
                 let duration = start.elapsed();

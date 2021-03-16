@@ -1,0 +1,128 @@
+{
+    "instances": ["kroA100.tsp", "kroB100.tsp"],
+    "algorithms": [
+        {
+            "solver": "Local",
+            "type": "RandomWalker",
+            "transition": "Vertex",
+            "initial_solver": {
+                "solver": "Random"
+            },
+            "name": "Local-RandomWalker-Random-Vertex"
+        },
+        {
+            "solver": "Local",
+            "type": "RandomWalker",
+            "transition": "Edges",
+            "initial_solver": {
+                "solver": "Random"
+            },
+            "name": "Local-RandomWalker-Random-Edges"
+        },
+        {
+            "solver": "Local",
+            "type": "RandomWalker",
+            "transition": "Vertex",
+            "initial_solver": {
+                "solver": "Greedy",
+                "picker": "CycleSimultaneous",
+                "name": "Greedy-CycleSimultaneous"
+            },
+            "name": "Local-RandomWalker-Greedy-Vertex"
+        },
+        {
+            "solver": "Local",
+            "type": "RandomWalker",
+            "transition": "Edges",
+            "initial_solver": {
+                "solver": "Greedy",
+                "picker": "CycleSimultaneous",
+                "name": "Greedy-CycleSimultaneous"
+            },
+            "name": "Local-RandomWalker-Greedy-Edges"
+        },
+        {
+            "solver": "Local",
+            "type": "Greedy",
+            "transition": "Vertex",
+            "initial_solver": {
+                "solver": "Random"
+            },
+            "name": "Local-Greedy-Random-Vertex"
+        },
+        {
+            "solver": "Local",
+            "type": "Greedy",
+            "transition": "Edges",
+            "initial_solver": {
+                "solver": "Random"
+            },
+            "name": "Local-Greedy-Random-Edges"
+        },
+        {
+            "solver": "Local",
+            "type": "Steepest",
+            "transition": "Vertex",
+            "initial_solver": {
+                "solver": "Random"
+            },
+            "name": "Local-Steepest-Random-Vertex"
+        },
+        {
+            "solver": "Local",
+            "type": "Steepest",
+            "transition": "Edges",
+            "initial_solver": {
+                "solver": "Random"
+            },
+            "name": "Local-Steepest-Random-Edges"
+        },
+        {
+            "solver": "Local",
+            "type": "Greedy",
+            "transition": "Vertex",
+            "initial_solver": {
+                "solver": "Greedy",
+                "picker": "CycleSimultaneous",
+                "name": "Greedy-CycleSimultaneous"
+            },
+            "name": "Local-Greedy-Greedy-Vertex"
+        },
+        {
+            "solver": "Local",
+            "type": "Greedy",
+            "transition": "Edges",
+            "initial_solver": {
+                "solver": "Greedy",
+                "picker": "CycleSimultaneous",
+                "name": "Greedy-CycleSimultaneous"
+            },
+            "name": "Local-Greedy-Greedy-Edges"
+        },
+        {
+            "solver": "Local",
+            "type": "Steepest",
+            "transition": "Vertex",
+            "initial_solver": {
+                "solver": "Greedy",
+                "picker": "CycleSimultaneous",
+                "name": "Greedy-CycleSimultaneous"
+            },
+            "name": "Local-Steepest-Greedy-Vertex"
+        },
+        {
+            "solver": "Local",
+            "type": "Steepest",
+            "transition": "Edges",
+            "initial_solver": {
+                "solver": "Greedy",
+                "picker": "CycleSimultaneous",
+                "name": "Greedy-CycleSimultaneous"
+            },
+            "name": "Local-Steepest-Greedy-Edges"
+        }
+    ],
+    "iterations": 2,
+    "table": "table_local",
+    "plots": "plots_local"
+}

@@ -26,6 +26,7 @@
             "name": "Greedy-Regret"
         }
     ],
+    "iterations": 100,
     "table": "table_greedy",
     "plots": "plots_greedy"
 }

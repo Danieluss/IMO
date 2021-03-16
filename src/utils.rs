@@ -45,7 +45,8 @@ impl Stat {
         if value < self.min {
             self.min = value;
             flag = true;
-        } else if value > self.max {
+        }
+        if value > self.max {
             self.max = value;
         }
         self.sum+= value;

@@ -10,16 +10,28 @@ pub mod tsp {
     pub mod def;
     pub mod solver;
     pub mod random_solver;
+    pub mod solvers_factory;
     pub mod partial_path;
     pub mod picker;
-    pub mod solvers_factory;
     pub mod pickers {
         pub mod nearest_picker;
         pub mod cycle_picker;
         pub mod cycle_simultaneous_picker;
         pub mod regret_picker;
     }
+    pub mod neighborhoods {
+        pub mod neighborhood;
+        pub mod transition;
+        pub mod inter_cycle_transition;
+        pub mod edges_transition;
+        pub mod vertex_transition;
+    }
+    pub mod local_solvers;
+}
+pub mod primes {
+    pub mod primes;
 }
 
 pub mod utils;
+
 
