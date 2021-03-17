@@ -10,6 +10,12 @@ pub struct City {
     y: f32,
 }
 
+impl City {
+    pub fn get_coord(&self) -> (f32, f32) {
+        (self.x, self.y)
+    }
+}
+
 pub struct TSPSolution {
     pub perm_a: Vec<usize>,
     pub perm_b: Vec<usize>

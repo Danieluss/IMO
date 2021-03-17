@@ -1,3 +1,5 @@
+use crate::tsp::def::TSPSolution;
+use crate::tsp::def::TSPInstance;
 use std::{fs};
 use std::fs::File;
 use std::io::prelude::*;
@@ -85,19 +87,71 @@ impl Clone for Stat {
 }
 
 pub fn print_table_to_file(file: &mut File, stats: &Vec<Vec<Stat>>, stat_name: &str, config: &json::JsonValue) {
+    write!(file, "\\begin{{table}}[H]
+    \\centering
+    \\begin{{tabular}}{{|l|");
+    for _ in 0..config["instances"].len() {
+        write!(file, "r|");
+    }
+    write!(file, "}}
+    \\hline
+    Algorithm");
+
     for instancename in config["instances"].members() {
         write!(file, " & {}", instancename);
     }
     write!(file, "\\\\ \\hline\n");
 
+    let mut min_id = vec![0; config["instances"].len()];
+
+    for i in 0..config["algorithms"].len() {
+        for j in 0..config["instances"].len() {
+            if stats[i][j].get(stat_name) < stats[min_id[j]][j].get(stat_name) {
+                min_id[j] = i;
+            }
+        }
+    }
+
     for (i, algorithm) in config["algorithms"].members().enumerate() {
         write!(file, "{} ", algorithm["name"].as_str().unwrap());
         
         for j in 0..config["instances"].len() {
-            write!(file, "& {} ", stats[i][j].get(stat_name));
+            write!(file, " & ");
+            if min_id[j] == i {
+                write!(file, "\\textbf{{");
+            }
+            write!(file, "{}", stats[i][j].get(stat_name));
+            if min_id[j] == i {
+                write!(file, "}}");
+            }
         }
         write!(file, "\\\\ \\hline\n");
     }
 
+    write!(file, "\\end{{tabular}}
+    \\caption{{{}}}
+\\end{{table}}", stat_name);
+
     write!(file, "\n\n");
+}
+
+fn print_path(file: &mut File, color: &str, scale: f32, instance: &TSPInstance, perm: &Vec<usize>) {
+    for i in 0..perm.len() {
+        let city_a_coord = instance.cities[perm[i]].get_coord();
+        let city_b_coord = instance.cities[perm[(i+1)%perm.len()]].get_coord();
+        write!(file, "\\draw[color={}, thick] ({},{}) -- ({},{});\n", color, city_a_coord.0*scale, city_a_coord.1*scale, city_b_coord.0*scale, city_b_coord.1*scale);
+    }
+}
+
+pub fn print_graph_to_file(file: &mut File, name: &str, scale: f32, instance: &TSPInstance, solution: &TSPSolution) {
+    write!(file, "\\begin{{subfigure}}[b]{{0.45\\textwidth}}
+    \\centering
+    \\begin{{tikzpicture}}");
+
+    print_path(file, "red", scale, instance, &solution.perm_a);
+    print_path(file, "blue", scale, instance, &solution.perm_b);
+
+    write!(file, "\\end{{tikzpicture}}
+    \\caption{{{}}}
+    \\end{{subfigure}}\n", name);
 }

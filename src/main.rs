@@ -3,7 +3,7 @@ use std::time::Instant;
 use std::fs::File;
 use json;
 
-use imo::utils::{Stat, contents, print_table_to_file};
+use imo::utils::{Stat, contents, print_table_to_file, print_graph_to_file};
 use imo::traits::Instance;
 use imo::tsp::def::{TSPInstance, TSPSolution};
 use imo::tsp::solvers_factory::SolversFactory;
@@ -18,6 +18,9 @@ fn main() {
     let mut scores = vec![vec![Stat::new(); config["instances"].len()]; config["algorithms"].len()];
     let mut times = vec![vec![Stat::new(); config["instances"].len()]; config["algorithms"].len()];
     let mut best_solutions = vec![vec![TSPSolution{perm_a: Vec::new(), perm_b: Vec::new()}; config["instances"].len()]; config["algorithms"].len()];
+
+    let filepath = format!("res/{}", config["plots"].as_str().unwrap());
+    let mut plot_file = File::create(&filepath).unwrap();
 
     for (j, instancename) in config["instances"].members().enumerate() {
         let filepath = format!("data/{}", &instancename.as_str().unwrap());
@@ -35,6 +38,8 @@ fn main() {
                     best_solutions[i][j] = solution;
                 }
             }
+            print_graph_to_file(&mut plot_file, algorithm["name"].as_str().unwrap(),
+                config["plots_scale"].as_f32().unwrap(), &instance, &best_solutions[i][j]);
         }
     }
 
