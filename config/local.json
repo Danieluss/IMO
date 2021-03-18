@@ -25,8 +25,8 @@
             "transition": "Vertex",
             "initial_solver": {
                 "solver": "Greedy",
-                "picker": "CycleSimultaneous",
-                "name": "Greedy-CycleSimultaneous"
+                "picker": "Regret",
+                "name": "Greedy-Regret"
             },
             "name": "Local-RandomWalker-Greedy-Vertex"
         },
@@ -36,8 +36,8 @@
             "transition": "Edges",
             "initial_solver": {
                 "solver": "Greedy",
-                "picker": "CycleSimultaneous",
-                "name": "Greedy-CycleSimultaneous"
+                "picker": "Regret",
+                "name": "Greedy-Regret"
             },
             "name": "Local-RandomWalker-Greedy-Edges"
         },
@@ -61,6 +61,28 @@
         },
         {
             "solver": "Local",
+            "type": "Greedy",
+            "transition": "Vertex",
+            "initial_solver": {
+                "solver": "Greedy",
+                "picker": "Regret",
+                "name": "Greedy-Regret"
+            },
+            "name": "Local-Greedy-Greedy-Vertex"
+        },
+        {
+            "solver": "Local",
+            "type": "Greedy",
+            "transition": "Edges",
+            "initial_solver": {
+                "solver": "Greedy",
+                "picker": "Regret",
+                "name": "Greedy-Regret"
+            },
+            "name": "Local-Greedy-Greedy-Edges"
+        },
+        {
+            "solver": "Local",
             "type": "Steepest",
             "transition": "Vertex",
             "initial_solver": {
@@ -79,34 +101,12 @@
         },
         {
             "solver": "Local",
-            "type": "Greedy",
-            "transition": "Vertex",
-            "initial_solver": {
-                "solver": "Greedy",
-                "picker": "CycleSimultaneous",
-                "name": "Greedy-CycleSimultaneous"
-            },
-            "name": "Local-Greedy-Greedy-Vertex"
-        },
-        {
-            "solver": "Local",
-            "type": "Greedy",
-            "transition": "Edges",
-            "initial_solver": {
-                "solver": "Greedy",
-                "picker": "CycleSimultaneous",
-                "name": "Greedy-CycleSimultaneous"
-            },
-            "name": "Local-Greedy-Greedy-Edges"
-        },
-        {
-            "solver": "Local",
             "type": "Steepest",
             "transition": "Vertex",
             "initial_solver": {
                 "solver": "Greedy",
-                "picker": "CycleSimultaneous",
-                "name": "Greedy-CycleSimultaneous"
+                "picker": "Regret",
+                "name": "Greedy-Regret"
             },
             "name": "Local-Steepest-Greedy-Vertex"
         },
@@ -116,13 +116,15 @@
             "transition": "Edges",
             "initial_solver": {
                 "solver": "Greedy",
-                "picker": "CycleSimultaneous",
-                "name": "Greedy-CycleSimultaneous"
+                "picker": "Regret",
+                "name": "Greedy-Regret"
             },
             "name": "Local-Steepest-Greedy-Edges"
         }
     ],
-    "iterations": 2,
+    "iterations": 100,
+    "time_multiplier": 1000,
     "table": "table_local",
-    "plots": "plots_local"
+    "plots": "plots_local",
+    "plots_scale": 0.002
 }
