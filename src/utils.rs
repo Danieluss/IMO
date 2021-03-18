@@ -120,7 +120,7 @@ pub fn print_table_to_file(file: &mut File, stats: &Vec<Vec<Stat>>, stat_name: &
             if min_id[j] == i {
                 write!(file, "\\textbf{{");
             }
-            write!(file, "{}", stats[i][j].get(stat_name));
+            write!(file, "{}", (stats[i][j].get(stat_name)*100.0).round()/100.0);
             if min_id[j] == i {
                 write!(file, "}}");
             }

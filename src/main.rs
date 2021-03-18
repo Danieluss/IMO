@@ -21,6 +21,7 @@ fn main() {
 
     let filepath = format!("res/{}", config["plots"].as_str().unwrap());
     let mut plot_file = File::create(&filepath).unwrap();
+    let time_multiplier = config["time_multiplier"].as_f32().unwrap();
 
     for (j, instancename) in config["instances"].members().enumerate() {
         let filepath = format!("data/{}", &instancename.as_str().unwrap());
@@ -33,7 +34,7 @@ fn main() {
                 let duration = start.elapsed();
                 let score = instance.eval(&solution);
                 let is_best = scores[i][j].update(score);
-                times[i][j].update(duration.as_secs_f32());
+                times[i][j].update(duration.as_secs_f32()*time_multiplier);
                 if is_best {
                     best_solutions[i][j] = solution;
                 }
