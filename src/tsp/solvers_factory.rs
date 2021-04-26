@@ -18,6 +18,7 @@ use json;
 use crate::tsp::random_solver::RandomSolver;
 use crate::tsp::solver::GreedySolver;
 use crate::tsp::candidate_solver::CandidateSolver;
+use crate::tsp::memory_solver::MemorySolver;
 
 pub struct SolversFactory;
 
@@ -56,6 +57,10 @@ impl SolversFactory {
         } else if config["solver"] == "Candidate" {
             Box::new(CandidateSolver::new(
                 config["num_neighbors"].as_usize().unwrap(),
+                SolversFactory::create_from_json(&config["initial_solver"])
+            ))
+        } else if config["solver"] == "Memory" {
+            Box::new(MemorySolver::new(
                 SolversFactory::create_from_json(&config["initial_solver"])
             ))
         } else {
