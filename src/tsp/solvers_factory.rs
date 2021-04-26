@@ -17,6 +17,7 @@ use crate::tsp::pickers::nearest_picker::NearestPicker;
 use json;
 use crate::tsp::random_solver::RandomSolver;
 use crate::tsp::solver::GreedySolver;
+use crate::tsp::candidate_solver::CandidateSolver;
 
 pub struct SolversFactory;
 
@@ -52,6 +53,11 @@ impl SolversFactory {
                     transitions.remove(config["transition"].as_str().unwrap()).unwrap()
                 ))
             }
+        } else if config["solver"] == "Candidate" {
+            Box::new(CandidateSolver::new(
+                config["num_neighbors"].as_usize().unwrap(),
+                SolversFactory::create_from_json(&config["initial_solver"])
+            ))
         } else {
             Box::new(RandomSolver)
         }

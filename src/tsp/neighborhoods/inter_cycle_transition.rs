@@ -17,6 +17,18 @@ impl InterCycleTransition {
         }
         Some(cycles)
     }
+    fn pack_state(&self, cycle_a: usize, cycle_b: usize, solution: &TSPSolution) -> usize {
+        let (_, n_b) = (solution.perm_a.len(), solution.perm_b.len());
+        cycle_b + cycle_a*n_b + 1
+    }
+
+    pub fn apply_explicit(&self, cycle_a: usize, cycle_b: usize, solution: &mut TSPSolution) {
+        self.apply(self.pack_state(cycle_a, cycle_b, solution), solution)
+    }
+
+    pub fn score_explicit(&self, cycle_a: usize, cycle_b: usize, instance: &TSPInstance, solution: &TSPSolution) -> Option<f32> {
+        self.score(self.pack_state(cycle_a, cycle_b, solution), instance, solution)
+    }
 }
 
 impl Transition for InterCycleTransition {
@@ -43,6 +55,16 @@ impl Transition for InterCycleTransition {
 
     fn apply(&self, state: usize, solution: &mut TSPSolution) {
         let (cycle_a, cycle_b) = self.unpack_state(state, solution).unwrap();
+        let vertex_a = solution.perm_a[cycle_a];
+        let vertex_b = solution.perm_b[cycle_b];
+
+        solution.cycle[vertex_a]^=1;
+        solution.cycle[vertex_b]^=1;
+
+        let tmp = solution.order[vertex_b];
+        solution.order[vertex_b] = solution.order[vertex_a];
+        solution.order[vertex_a] = tmp;
+
         let t = solution.perm_a[cycle_a];
         solution.perm_a[cycle_a] = solution.perm_b[cycle_b];
         solution.perm_b[cycle_b] = t;

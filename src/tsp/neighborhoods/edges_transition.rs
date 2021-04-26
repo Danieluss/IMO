@@ -21,6 +21,44 @@ impl EdgesTransition {
             return None
         }
     }
+
+    fn pack_state(&self, cycle: usize, vertex_a: usize, vertex_b: usize, solution: &TSPSolution) -> usize {
+        let mut vertex_a = vertex_a;
+        let mut shift = (vertex_b as i32)-(vertex_a as i32)+1;
+        let (n_a, n_b) = (solution.perm_a.len(), solution.perm_b.len());
+        let mut state: usize;
+        if cycle == 0 {
+            if vertex_a > 0 {
+                vertex_a-= 1;
+            } else {
+                vertex_a = vertex_a+n_a-1;
+            }
+            if shift < 0 {
+                shift+=n_a as i32;
+            }
+            state = (n_a-3)*vertex_a + (shift as usize);
+        } else {
+            if vertex_a > 0 {
+                vertex_a-=1;
+            } else {
+                vertex_a = vertex_a+n_b-1;
+            }
+            if shift < 0 {
+                shift+=n_b as i32;
+            }
+            state = (n_a-3)*n_a + (n_b-3)*vertex_a + (shift as usize);
+        }
+        state+=1;
+        state
+    }
+
+    pub fn apply_explicit(&self, cycle: usize, vertex_a: usize, vertex_b: usize, solution: &mut TSPSolution) {
+        self.apply(self.pack_state(cycle, vertex_a, vertex_b, solution), solution);
+    }
+
+    pub fn score_explicit(&self, cycle: usize, vertex_a: usize, vertex_b: usize, instance: &TSPInstance, solution: &TSPSolution) -> Option<f32> {
+        self.score(self.pack_state(cycle, vertex_a, vertex_b, solution), instance, solution)
+    }
 }
 
 impl Transition for EdgesTransition {
@@ -56,6 +94,13 @@ impl Transition for EdgesTransition {
             let t = b; b = a; a = t;
         }
         while a < b {
+            let vertex_a = perm[a];
+            let vertex_b = perm[b];
+            let tmp = solution.order[vertex_b];
+            solution.order[vertex_b] = solution.order[vertex_a];
+            solution.order[vertex_a] = tmp;
+            assert_eq!(solution.order[vertex_a], b);
+            assert_eq!(solution.order[vertex_b], a);
             let t = perm[a]; perm[a] = perm[b]; perm[b] = t;
             a+=1;
             b-=1;

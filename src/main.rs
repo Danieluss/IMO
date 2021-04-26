@@ -17,7 +17,7 @@ fn main() {
 
     let mut scores = vec![vec![Stat::new(); config["instances"].len()]; config["algorithms"].len()];
     let mut times = vec![vec![Stat::new(); config["instances"].len()]; config["algorithms"].len()];
-    let mut best_solutions = vec![vec![TSPSolution{perm_a: Vec::new(), perm_b: Vec::new()}; config["instances"].len()]; config["algorithms"].len()];
+    let mut best_solutions = vec![vec![TSPSolution::new(Vec::new(), Vec::new()); config["instances"].len()]; config["algorithms"].len()];
 
     let filepath = format!("res/{}", config["plots"].as_str().unwrap());
     let mut plot_file = File::create(&filepath).unwrap();
@@ -47,13 +47,9 @@ fn main() {
     let filepath = format!("res/{}", config["table"].as_str().unwrap());
     let mut file = File::create(&filepath).unwrap();
 
-    print_table_to_file(&mut file, &scores, "avg", &config);
-    print_table_to_file(&mut file, &scores, "min", &config);
-    print_table_to_file(&mut file, &scores, "max", &config);
+    print_table_to_file(&mut file, &scores, &config);
 
-    print_table_to_file(&mut file, &times, "avg", &config);
-    print_table_to_file(&mut file, &times, "min", &config);
-    print_table_to_file(&mut file, &times, "max", &config);
+    print_table_to_file(&mut file, &times, &config);
 
 
 }

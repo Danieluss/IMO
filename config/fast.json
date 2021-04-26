@@ -1,0 +1,32 @@
+{
+    "instances": ["kroA200.tsp", "kroB200.tsp"],
+    "algorithms": [
+        {
+            "solver": "Greedy",
+            "picker": "Regret",
+            "name": "Greedy-Regret"
+        },
+        {
+            "solver": "Local",
+            "type": "Steepest",
+            "transition": "Edges",
+            "initial_solver": {
+                "solver": "Random"
+            },
+            "name": "Local-Steepest-Random-Edges"
+        },
+        {
+            "solver": "Candidate",
+            "initial_solver": {
+                "solver": "Random"
+            },
+            "num_neighbors": 10,
+            "name": "Candidate"
+        }
+    ],
+    "iterations": 100,
+    "time_multiplier": 1000,
+    "table": "table_fast",
+    "plots": "plots_fast",
+    "plots_scale": 0.002
+}

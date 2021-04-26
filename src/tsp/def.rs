@@ -18,7 +18,36 @@ impl City {
 
 pub struct TSPSolution {
     pub perm_a: Vec<usize>,
-    pub perm_b: Vec<usize>
+    pub perm_b: Vec<usize>,
+    pub cycle: Vec<usize>,
+    pub order: Vec<usize>
+}
+
+impl TSPSolution {
+    pub fn new(perm_a: Vec<usize>, perm_b: Vec<usize>) -> TSPSolution {
+        let mut cycle = Vec::new();
+        let mut order = Vec::new();
+        for _ in 0..perm_a.len() + perm_b.len() {
+            cycle.push(0);
+            order.push(0);  
+        }
+        for i in 0..perm_a.len() {
+            let v = perm_a[i];
+            cycle[v] = 0;
+            order[v] = i;
+        }
+        for i in 0..perm_b.len() {
+            let v = perm_b[i];
+            cycle[v] = 1;
+            order[v] = i;
+        }
+        TSPSolution {
+            perm_a,
+            perm_b,
+            cycle,
+            order
+        }
+    }
 }
 
 impl Solution for TSPSolution {}
@@ -27,7 +56,9 @@ impl Clone for TSPSolution {
     fn clone(&self) -> Self {
         TSPSolution {
             perm_a: self.perm_a.clone(),
-            perm_b: self.perm_b.clone()
+            perm_b: self.perm_b.clone(),
+            cycle: Vec::new(),
+            order: Vec::new()
         }
     }
 }

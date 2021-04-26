@@ -68,9 +68,9 @@ impl Solver<TSPInstance, TSPSolution> for GreedySolver{
             self.picker.add_both(&mut partial_a, &mut partial_b, &mut visited);
         }
 
-        TSPSolution {
-            perm_a: partial_a.vec,
-            perm_b: partial_b.vec,
-        }
+        TSPSolution::new(
+            partial_a.vec,
+            partial_b.vec,
+        )
     }
 }

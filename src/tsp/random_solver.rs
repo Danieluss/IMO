@@ -14,9 +14,9 @@ impl RandomSolver {
 impl Solver<TSPInstance, TSPSolution> for RandomSolver {
     fn solve(&self, start_vertex: usize, instance: &TSPInstance) -> TSPSolution {
         let perm = random_permutation(instance.dimension);
-        TSPSolution {
-            perm_a: perm[..(perm.len() + 1)/2].to_vec(),
-            perm_b: perm[(perm.len() + 1)/2..].to_vec()
-        }
+        TSPSolution::new(
+            perm[..(perm.len() + 1)/2].to_vec(),
+            perm[(perm.len() + 1)/2..].to_vec()
+        )
     }
 }

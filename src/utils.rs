@@ -86,7 +86,7 @@ impl Clone for Stat {
     }
 }
 
-pub fn print_table_to_file(file: &mut File, stats: &Vec<Vec<Stat>>, stat_name: &str, config: &json::JsonValue) {
+pub fn print_table_to_file(file: &mut File, stats: &Vec<Vec<Stat>>, config: &json::JsonValue) {
     write!(file, "\\begin{{table}}[H]
     \\centering
     \\begin{{tabular}}{{|l|");
@@ -106,7 +106,7 @@ pub fn print_table_to_file(file: &mut File, stats: &Vec<Vec<Stat>>, stat_name: &
 
     for i in 0..config["algorithms"].len() {
         for j in 0..config["instances"].len() {
-            if stats[i][j].get(stat_name) < stats[min_id[j]][j].get(stat_name) {
+            if stats[i][j].get("avg") < stats[min_id[j]][j].get("avg") {
                 min_id[j] = i;
             }
         }
@@ -120,7 +120,7 @@ pub fn print_table_to_file(file: &mut File, stats: &Vec<Vec<Stat>>, stat_name: &
             if min_id[j] == i {
                 write!(file, "\\textbf{{");
             }
-            write!(file, "{}", (stats[i][j].get(stat_name)*100.0).round()/100.0);
+            write!(file, "{} ({}-{})", (stats[i][j].get("avg")*100.0).round()/100.0, (stats[i][j].get("min")*100.0).round()/100.0, (stats[i][j].get("max")*100.0).round()/100.0);
             if min_id[j] == i {
                 write!(file, "}}");
             }
@@ -129,8 +129,8 @@ pub fn print_table_to_file(file: &mut File, stats: &Vec<Vec<Stat>>, stat_name: &
     }
 
     write!(file, "\\end{{tabular}}
-    \\caption{{{}}}
-\\end{{table}}", stat_name);
+    \\caption{{table}}
+\\end{{table}}");
 
     write!(file, "\n\n");
 }

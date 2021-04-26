@@ -27,6 +27,7 @@ pub mod tsp {
         pub mod vertex_transition;
     }
     pub mod local_solvers;
+    pub mod candidate_solver;
 }
 pub mod primes {
     pub mod primes;
