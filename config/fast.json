@@ -16,6 +16,13 @@
             "name": "Local-Steepest-Random-Edges"
         },
         {
+            "solver": "Memory",
+            "initial_solver": {
+                "solver": "Random"
+            },
+            "name": "Memory"
+        },
+        {
             "solver": "Candidate",
             "initial_solver": {
                 "solver": "Random"
@@ -24,7 +31,7 @@
             "name": "Candidate"
         }
     ],
-    "iterations": 1,
+    "iterations": 100,
     "time_multiplier": 1000,
     "table": "table_fast",
     "plots": "plots_fast",
