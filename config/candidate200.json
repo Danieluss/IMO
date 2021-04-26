@@ -1,0 +1,55 @@
+{
+    "instances": ["kroA200.tsp", "kroB200.tsp"],
+    "algorithms": [
+        {
+            "solver": "Greedy",
+            "picker": "Regret",
+            "name": "Greedy-Regret"
+        },
+        {
+            "solver": "Local",
+            "type": "Steepest",
+            "transition": "Edges",
+            "initial_solver": {
+                "solver": "Random"
+            },
+            "name": "Local-Steepest-Random-Edges"
+        },
+        {
+            "solver": "Local",
+            "type": "Steepest",
+            "transition": "Edges",
+            "initial_solver": {
+                "solver": "Greedy",
+                "picker": "Regret",
+                "name": "Greedy-Regret"
+            },
+            "name": "Local-Steepest-Greedy-Edges"
+        },
+        {
+            "solver": "Local",
+            "type": "Candidate",
+            "transition": "Edges",
+            "initial_solver": {
+                "solver": "Random"
+            },
+            "name": "Local-Candidate-Random-Edges"
+        },
+        {
+            "solver": "Local",
+            "type": "Candidate",
+            "transition": "Edges",
+            "initial_solver": {
+                "solver": "Greedy",
+                "picker": "Regret",
+                "name": "Greedy-Regret"
+            },
+            "name": "Local-Candidate-Greedy-Edges"
+        }
+    ],
+    "iterations": 100,
+    "time_multiplier": 1000,
+    "table": "table_candidate200",
+    "plots": "plots_candidate200",
+    "plots_scale": 0.002
+}

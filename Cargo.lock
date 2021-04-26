@@ -36,6 +36,7 @@ dependencies = [
  "custom_derive",
  "enum_derive",
  "json",
+ "permutation",
  "rand",
 ]
 
@@ -50,6 +51,12 @@ name = "libc"
 version = "0.2.88"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "03b07a082330a35e43f63177cc01689da34fbffa0105e1246cf0311472cac73a"
+
+[[package]]
+name = "permutation"
+version = "0.2.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d9978962f8a4b158e97447a6d09d2d75e206d2994eff056c894019f362b27142"
 
 [[package]]
 name = "ppv-lite86"

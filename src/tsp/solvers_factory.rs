@@ -5,6 +5,7 @@ use crate::tsp::neighborhoods::transition::Transition;
 use crate::tsp::neighborhoods::inter_cycle_transition::InterCycleTransition;
 use crate::tsp::local_solvers::LocalGreedySolver;
 use crate::tsp::local_solvers::LocalSteepestSolver;
+use crate::tsp::candidate_solver::CandidateSteepestSolver;
 use crate::tsp::def::TSPSolution;
 use crate::tsp::def::TSPInstance;
 use crate::traits::Solver;
@@ -38,6 +39,11 @@ impl SolversFactory {
             transitions.insert("Edges", || {vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]});
             if config["type"] == "Greedy" {
                 Box::new(LocalGreedySolver::new(
+                    SolversFactory::create_from_json(&config["initial_solver"]),
+                    transitions.remove(config["transition"].as_str().unwrap()).unwrap()
+                ))
+            } else if config["type"] == "Candidate" {
+                Box::new(CandidateSteepestSolver::new(
                     SolversFactory::create_from_json(&config["initial_solver"]),
                     transitions.remove(config["transition"].as_str().unwrap()).unwrap()
                 ))
