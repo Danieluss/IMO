@@ -20,7 +20,7 @@
             "initial_solver": {
                 "solver": "Random"
             },
-            "name": "Memory"
+            "name": "LM"
         },
         {
             "solver": "Candidate",

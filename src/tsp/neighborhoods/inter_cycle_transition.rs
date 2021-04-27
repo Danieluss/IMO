@@ -7,7 +7,7 @@ impl InterCycleTransition {
     pub fn new() -> InterCycleTransition {
         InterCycleTransition {}
     }
-    fn unpack_state(&self, state: usize, solution: &TSPSolution) -> Option<(usize, usize)> {
+    pub fn unpack_state(&self, state: usize, solution: &TSPSolution) -> Option<(usize, usize)> {
         let mut state = state;
         state-=1;
         let (n_a, n_b) = (solution.perm_a.len(), solution.perm_b.len());
@@ -58,6 +58,8 @@ impl Transition for InterCycleTransition {
         let vertex_a = solution.perm_a[cycle_a];
         let vertex_b = solution.perm_b[cycle_b];
 
+        assert_ne!(solution.cycle[vertex_a], solution.cycle[vertex_b]);
+
         solution.cycle[vertex_a]^=1;
         solution.cycle[vertex_b]^=1;
 
@@ -68,5 +70,9 @@ impl Transition for InterCycleTransition {
         let t = solution.perm_a[cycle_a];
         solution.perm_a[cycle_a] = solution.perm_b[cycle_b];
         solution.perm_b[cycle_b] = t;
+    }
+    
+    fn show_state(&self, state: usize, solution: &TSPSolution) {
+        println!("{:?}", self.unpack_state(state, solution));
     }
 }

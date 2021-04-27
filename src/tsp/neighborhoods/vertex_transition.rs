@@ -66,4 +66,8 @@ impl Transition for VertexTransition {
         perm[vertex_a] = perm[vertex_b];
         perm[vertex_b] = t;
     }
+
+    fn show_state(&self, state: usize, solution: &TSPSolution) {
+        todo!();
+    }
 }

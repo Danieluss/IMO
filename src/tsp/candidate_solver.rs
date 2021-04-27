@@ -41,12 +41,9 @@ impl Solver<TSPInstance, TSPSolution> for CandidateSolver {
             let mut u: Vec<usize> = Vec::new();
             for j in 0..cmp::min(instance.dimension, self.num_neighbors) {
                 u.push(v[j].1);
-                // print!("{}, ", v[j].0);
             }
-            // println!("");
             nearest_vertices.push(u);
         }
-        // println!("{:?}", nearest_vertices);
         
         while improvement_flag {
             improvement_flag = false;
@@ -55,32 +52,77 @@ impl Solver<TSPInstance, TSPSolution> for CandidateSolver {
             for i in 0..instance.dimension {
                 for k in 0..nearest_vertices[i].len() {
                     let j = nearest_vertices[i][k];
+                    if solution.cycle[i] == solution.cycle[j] && (solution.order[i] as isize -solution.order[j] as isize).abs() <= 1 {
+                        continue;
+                    }
                     let score: Option<f32>;
                     if solution.cycle[i] != solution.cycle[j] {
-                        score = inter_cycle_transition.score_explicit(solution.order[i], solution.order[j], instance, &solution)
-                    } else {
-                        score = edges_transition.score_explicit(solution.cycle[i], solution.order[i], solution.order[j], instance, &solution)
-                    }
-                    match score {
-                        Some(x) => {
-                            if x < min_score {
-                                min_score = x;
-                                best_pair = (i, j);
-                            }
+                        let j_prev;
+                        let j_next;
+                        let vertex_prev;
+                        let vertex_next;
+                        let score_prev;
+                        let score_next;
+                        if solution.cycle[i] == 0 {
+                            j_prev = (solution.order[j]+solution.perm_b.len()-1)%solution.perm_b.len();
+                            j_next = (solution.order[j]+1)%solution.perm_b.len();
+                            vertex_prev = solution.perm_b[j_prev];
+                            vertex_next = solution.perm_b[j_next];
+                            score_prev = inter_cycle_transition.score_explicit(solution.order[i], j_prev, instance, &solution);
+                            score_next = inter_cycle_transition.score_explicit(solution.order[i], j_next, instance, &solution);
+                        } else {
+                            j_prev = (solution.order[j]+solution.perm_a.len()-1)%solution.perm_a.len();
+                            j_next = (solution.order[j]+1)%solution.perm_a.len();
+                            vertex_prev = solution.perm_a[j_prev];
+                            vertex_next = solution.perm_a[j_next];
+                            score_prev = inter_cycle_transition.score_explicit(j_prev, solution.order[i], instance, &solution);
+                            score_next = inter_cycle_transition.score_explicit(j_next, solution.order[i], instance, &solution);
                         }
-                        None => {}
-                    }
-                    
+                        if score_prev.unwrap() < min_score {
+                            min_score = score_prev.unwrap();
+                            best_pair = (i, vertex_prev);
+                        }
+                        if score_next.unwrap() < min_score {
+                            min_score = score_next.unwrap();
+                            best_pair = (i, vertex_next);
+                        }
+                    } else {
+                        score = edges_transition.score_explicit(solution.cycle[i], solution.order[i], solution.order[j], instance, &solution);
+                        match score {
+                            Some(x) => {
+                                if score.unwrap() < min_score {
+                                    min_score = score.unwrap();
+                                    best_pair = (i, j);
+                                }
+                            }
+                            None => {}
+                        }
+                    }    
                 }
             }
             if min_score < 0.0 {
                 improvement_flag = true;
                 let (i, j) = best_pair;
+                // println!("{} {} {} {}", solution.cycle[i], solution.order[i], solution.cycle[j], solution.order[j]);
+                let s1 = instance.eval(&solution);
                 if solution.cycle[i] != solution.cycle[j] {
-                    inter_cycle_transition.apply_explicit(solution.order[i], solution.order[j], &mut solution)
+                    if solution.cycle[i] == 0 {
+                        inter_cycle_transition.apply_explicit(solution.order[i], solution.order[j], &mut solution)
+                    } else {
+                        inter_cycle_transition.apply_explicit(solution.order[j], solution.order[i], &mut solution)
+                    }
                 } else {
                     edges_transition.apply_explicit(solution.cycle[i], solution.order[i], solution.order[j], &mut solution)
                 }
+                for i in 0..instance.dimension {
+                    if solution.cycle[i] == 0 {
+                        assert_eq!(i, solution.perm_a[solution.order[i]]);
+                    } else {
+                        assert_eq!(i, solution.perm_b[solution.order[i]]);
+                    }
+                }
+                let s2 = instance.eval(&solution);
+                assert_eq!((s2-s1) as isize, min_score as isize);
             }
         }
         solution

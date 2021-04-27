@@ -9,4 +9,5 @@ pub trait Transition {
         let n = perm.len();
         (perm[(id+n-1)%n], perm[id], perm[(id+1)%n])
     }
+    fn show_state(&self, state: usize, solution: &TSPSolution);
 }

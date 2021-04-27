@@ -86,6 +86,17 @@ impl Neighborhood {
         }
     }
 
+    pub fn show_transition(&self, transition: usize, solution: &TSPSolution) {
+        let mut current_state = transition;
+        for i in 0..self.transitions.len() {
+            if current_state <= self.transition_sizes[i] {
+                self.transitions[i].show_state(current_state, solution);
+                break;
+            }
+            current_state-=self.transition_sizes[i];
+        }
+    }
+
     pub fn reset(&mut self) {
         if self.random {
             let mut rng = rand::thread_rng();
