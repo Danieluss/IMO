@@ -20,7 +20,7 @@ pub struct TSPSolution {
     pub perm_a: Vec<usize>,
     pub perm_b: Vec<usize>,
     pub cycle: Vec<usize>,
-    pub order: Vec<usize>
+    pub order: Vec<usize>,
 }
 
 impl TSPSolution {
@@ -29,7 +29,7 @@ impl TSPSolution {
         let mut order = Vec::new();
         for _ in 0..perm_a.len() + perm_b.len() {
             cycle.push(0);
-            order.push(0);  
+            order.push(0);
         }
         for i in 0..perm_a.len() {
             let v = perm_a[i];
@@ -45,7 +45,48 @@ impl TSPSolution {
             perm_a,
             perm_b,
             cycle,
-            order
+            order,
+        }
+    }
+
+    pub fn reorder(&mut self) {
+        let mut i = 0;
+        for val in self.perm_a.iter() {
+            self.order[*val] = i;
+            self.cycle[*val] = 0;
+            i += 1;
+        }
+        let mut i = 0;
+        for val in self.perm_b.iter() {
+            self.order[*val] = i;
+            self.cycle[*val] = 1;
+            i += 1;
+        }
+    }
+
+    pub fn check(&self) -> bool {
+        let mut res = true;
+        let mut i = 0;
+        for val in self.perm_a.iter() {
+            res &= (self.order[*val] == i);
+            res &= (self.cycle[*val] == 0);
+            i += 1;
+        }
+        let mut i = 0;
+        for val in self.perm_b.iter() {
+            res &= (self.order[*val] == i);
+            res &= (self.cycle[*val] == 1);
+            i += 1;
+        }
+        res
+    }
+
+    pub fn deep_clone(&self) -> Self {
+        TSPSolution {
+            perm_a: self.perm_a.clone(),
+            perm_b: self.perm_b.clone(),
+            cycle: self.cycle.clone(),
+            order: self.order.clone(),
         }
     }
 }
@@ -58,7 +99,7 @@ impl Clone for TSPSolution {
             perm_a: self.perm_a.clone(),
             perm_b: self.perm_b.clone(),
             cycle: Vec::new(),
-            order: Vec::new()
+            order: Vec::new(),
         }
     }
 }
@@ -93,7 +134,7 @@ impl TSPInstance {
         }
     }
 
-    fn eval_permutation(&self, perm: &Vec<usize>) -> f32{
+    fn eval_permutation(&self, perm: &Vec<usize>) -> f32 {
         let mut acc: f32 = 0.;
         for i in 0..perm.len() {
             acc += self.dist_k(perm[i], perm[(i + 1) % perm.len()]);

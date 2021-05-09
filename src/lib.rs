@@ -29,6 +29,8 @@ pub mod tsp {
     pub mod local_solvers;
     pub mod candidate_solver;
     pub mod memory_solver;
+    pub mod multistart_solver;
+    pub mod iterated_solver;
 }
 pub mod primes {
     pub mod primes;

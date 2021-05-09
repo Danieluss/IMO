@@ -5,6 +5,7 @@ use crate::tsp::neighborhoods::transition::Transition;
 use crate::tsp::neighborhoods::inter_cycle_transition::InterCycleTransition;
 use crate::tsp::local_solvers::LocalGreedySolver;
 use crate::tsp::local_solvers::LocalSteepestSolver;
+use crate::tsp::multistart_solver::MultiStartSolver;
 use crate::tsp::def::TSPSolution;
 use crate::tsp::def::TSPInstance;
 use crate::traits::Solver;
@@ -19,6 +20,7 @@ use crate::tsp::random_solver::RandomSolver;
 use crate::tsp::solver::GreedySolver;
 use crate::tsp::candidate_solver::CandidateSolver;
 use crate::tsp::memory_solver::MemorySolver;
+use crate::tsp::iterated_solver::{IteratedSolver, IteratedConstructionSolver};
 
 pub struct SolversFactory;
 
@@ -62,6 +64,35 @@ impl SolversFactory {
         } else if config["solver"] == "Memory" {
             Box::new(MemorySolver::new(
                 SolversFactory::create_from_json(&config["initial_solver"])
+            ))
+        } else if config["solver"] == "MSLS" {
+            Box::new(MultiStartSolver::new(
+                SolversFactory::create_from_json(&config["sub_solver"]),
+            config["no_iterations"].as_usize().unwrap()
+            ))
+        } else if config["solver"] == "Iterated" {
+            let mut transitions: HashMap<&str, fn() -> Vec<Box<dyn Transition>>> = HashMap::new();
+            transitions.insert("Vertex", || {vec![Box::new(InterCycleTransition{}), Box::new(VertexTransition{})]});
+            transitions.insert("Edges", || {vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]});
+            Box::new(IteratedSolver::new(
+                SolversFactory::create_from_json(&config["initial_solver"]),
+                SolversFactory::create_from_json(&config["sub_solver"]),
+                config["time"].as_f32().unwrap(),
+                config["perturb_min"].as_f32().unwrap(),
+                config["perturb_max"].as_f32().unwrap(),
+                transitions.remove("Vertex").unwrap()
+            ))
+        } else if config["solver"] == "IteratedConstruction" {
+            let mut transitions: HashMap<&str, fn() -> Vec<Box<dyn Transition>>> = HashMap::new();
+            transitions.insert("Vertex", || {vec![Box::new(InterCycleTransition{}), Box::new(VertexTransition{})]});
+            transitions.insert("Edges", || {vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]});
+            Box::new(IteratedConstructionSolver::new(
+                SolversFactory::create_from_json(&config["initial_solver"]),
+                SolversFactory::create_from_json(&config["sub_solver"]),
+                config["time"].as_f32().unwrap(),
+                config["perturb_min"].as_f32().unwrap(),
+                config["perturb_max"].as_f32().unwrap(),
+                transitions.remove("Vertex").unwrap()
             ))
         } else {
             Box::new(RandomSolver)

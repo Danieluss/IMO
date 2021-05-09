@@ -19,4 +19,8 @@ impl Solver<TSPInstance, TSPSolution> for RandomSolver {
             perm[(perm.len() + 1)/2..].to_vec()
         )
     }
+
+    fn solve_s(&self, start_vertex: usize, instance: &TSPInstance, solution: TSPSolution) -> TSPSolution {
+        unimplemented!()
+    }
 }

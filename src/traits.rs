@@ -12,4 +12,5 @@ pub trait MetaInstance<O>: Instance<O> where O: Solution {
 
 pub trait Solver<I, O> where I: Instance<O>, O: Solution {
     fn solve(&self, start_vertex: usize, instance: &I) -> O;
+    fn solve_s(&self, start_vertex: usize, instance: &I, solution: O) -> O;
 }

@@ -5,7 +5,6 @@ use crate::tsp::picker::Picker;
 use rand::Rng;
 
 
-
 pub struct GreedySolver {
     picker: Box<dyn Picker>,
 }
@@ -47,8 +46,8 @@ impl GreedySolver {
     }
 }
 
-impl Solver<TSPInstance, TSPSolution> for GreedySolver{
-    fn solve(&self, start_vertex: usize, instance: &TSPInstance, ) -> TSPSolution {
+impl Solver<TSPInstance, TSPSolution> for GreedySolver {
+    fn solve(&self, start_vertex: usize, instance: &TSPInstance) -> TSPSolution {
         let max = GreedySolver::remote(start_vertex, instance);
         let n: usize = instance.dimension;
         let mut visited = vec![false; n];
@@ -63,7 +62,34 @@ impl Solver<TSPInstance, TSPSolution> for GreedySolver{
             vec: vec![max.2],
         };
 
-        // TODO: Może jakieś clusterowanie (możliwie najlepiej dzielimy na dwa równe podzbiory, a dopiero potem w ich obrębie wyznaczamy najlepsze cykle)
+        while partial_a.vec.len() + partial_b.vec.len() < n {
+            self.picker.add_both(&mut partial_a, &mut partial_b, &mut visited);
+        }
+
+        TSPSolution::new(
+            partial_a.vec,
+            partial_b.vec,
+        )
+    }
+
+    fn solve_s(&self, start_vertex: usize, instance: &TSPInstance, solution: TSPSolution) -> TSPSolution {
+        let n: usize = instance.dimension;
+        let mut visited = vec![false; n];
+        for val in solution.perm_a.iter() {
+            visited[*val] = true;
+        }
+        for val in solution.perm_b.iter() {
+            visited[*val] = true;
+        }
+        let mut partial_a = PartialPath {
+            instance: &instance,
+            vec: solution.perm_a,
+        };
+        let mut partial_b = PartialPath {
+            instance: &instance,
+            vec: solution.perm_b,
+        };
+
         while partial_a.vec.len() + partial_b.vec.len() < n {
             self.picker.add_both(&mut partial_a, &mut partial_b, &mut visited);
         }

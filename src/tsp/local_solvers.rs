@@ -50,6 +50,10 @@ impl Solver<TSPInstance, TSPSolution> for LocalGreedySolver {
         }
         solution
     }
+
+    fn solve_s(&self, start_vertex: usize, instance: &TSPInstance, solution: TSPSolution) -> TSPSolution {
+        unimplemented!()
+    }
 }
 
 pub struct LocalSteepestSolver {
@@ -92,6 +96,10 @@ impl Solver<TSPInstance, TSPSolution> for LocalSteepestSolver {
             }
         }
         solution
+    }
+
+    fn solve_s(&self, start_vertex: usize, instance: &TSPInstance, solution: TSPSolution) -> TSPSolution {
+        unimplemented!()
     }
 }
 
@@ -140,5 +148,9 @@ impl Solver<TSPInstance, TSPSolution> for LocalRandomWalker {
             }
         }
         best_solution.1
+    }
+
+    fn solve_s(&self, start_vertex: usize, instance: &TSPInstance, solution: TSPSolution) -> TSPSolution {
+        unimplemented!()
     }
 }

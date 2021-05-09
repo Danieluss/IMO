@@ -168,6 +168,10 @@ impl MemorySolver {
 impl Solver<TSPInstance, TSPSolution> for MemorySolver {
     fn solve(&self, start_vertex: usize, instance: &TSPInstance) -> TSPSolution {
         let mut solution = self.initial_solver.solve(start_vertex, instance);
+        self.solve_s(start_vertex, instance, solution)
+    }
+
+    fn solve_s(&self, start_vertex: usize, instance: &TSPInstance, mut solution: TSPSolution) -> TSPSolution {
         let mut improvement_flag = true;
         let mut q: BinaryHeap<State> = BinaryHeap::new();
         for i in 0..instance.dimension {

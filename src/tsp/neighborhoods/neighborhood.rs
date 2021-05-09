@@ -13,7 +13,8 @@ pub struct Neighborhood {
     active: bool,
     start_state: usize,    
     transitions: Vec<Box<dyn Transition>>,
-    transition_sizes: Vec<usize>
+    transition_sizes: Vec<usize>,
+    neighborhood_size: usize
 }
 
 impl Neighborhood {
@@ -21,9 +22,10 @@ impl Neighborhood {
     pub fn new(transitions: Vec<Box<dyn Transition>>, solution: &TSPSolution, random: bool) -> Neighborhood{
         let mut transition_sizes = Vec::new();
         let mut neighborhood_size: usize = 0;
+        let mut no_transitions: usize = 0;
         for transition in &transitions {
             transition_sizes.push(transition.size(solution));
-            neighborhood_size+=transition_sizes.last().unwrap();
+            neighborhood_size += transition_sizes.last().unwrap();
         }
         let (generator, group_size) = if random {
             Primes::group_generator_and_size(neighborhood_size)
@@ -38,10 +40,17 @@ impl Neighborhood {
             active: false,
             start_state: 0,    
             transitions,
-            transition_sizes
+            transition_sizes,
+            neighborhood_size
         };
         neighborhood.reset();
         neighborhood
+    }
+
+    pub fn next_random(&mut self) -> usize {
+        let mut next_state = rand::thread_rng().gen_range(1..self.neighborhood_size);
+        self.state = next_state;
+        next_state
     }
 
     pub fn next(&mut self, instance: &TSPInstance, solution: &TSPSolution) -> Option<(f32, usize)> {
@@ -79,6 +88,7 @@ impl Neighborhood {
         let mut current_state = transition;
         for i in 0..self.transitions.len() {
             if current_state <= self.transition_sizes[i] {
+                // println!("{}", i);
                 self.transitions[i].apply(current_state, solution);
                 break;
             }

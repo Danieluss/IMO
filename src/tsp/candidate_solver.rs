@@ -127,5 +127,9 @@ impl Solver<TSPInstance, TSPSolution> for CandidateSolver {
         }
         solution
     }
+
+    fn solve_s(&self, start_vertex: usize, instance: &TSPInstance, solution: TSPSolution) -> TSPSolution {
+        unimplemented!()
+    }
 }
 

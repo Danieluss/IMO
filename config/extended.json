@@ -1,0 +1,89 @@
+{
+  "instances": [
+    "kroA200.tsp",
+    "kroB200.tsp"
+  ],
+  "algorithms": [
+    {
+      "solver": "MSLS",
+      "sub_solver": {
+        "solver": "Memory",
+        "initial_solver": {
+          "solver": "Random"
+        },
+        "name": "LM"
+      },
+      "no_iterations": 100,
+      "name": "MSLS"
+    },
+    {
+      "solver": "Iterated",
+      "initial_solver": {
+        "solver": "Memory",
+        "initial_solver": {
+          "solver": "Random"
+        },
+        "name": "LM"
+      },
+      "sub_solver": {
+        "solver": "Memory",
+        "initial_solver": {
+          "solver": "Dummy"
+        },
+        "name": "LM"
+      },
+      "time": 14376.09,
+      "perturb_min": 0.1,
+      "perturb_max": 0.5,
+      "name": "ILS1"
+    },
+    {
+      "solver": "IteratedConstruction",
+      "initial_solver": {
+        "solver": "Memory",
+        "initial_solver": {
+          "solver": "Random"
+        },
+        "name": "LM"
+      },
+      "sub_solver": {
+        "solver": "Greedy",
+        "picker": "Regret",
+        "name": "Greedy-Regret"
+      },
+      "time": 14376.09,
+      "perturb_min": 0.05,
+      "perturb_max": 0.2,
+      "name": "ILS2"
+    },
+    {
+      "solver": "IteratedConstruction",
+      "initial_solver": {
+        "solver": "Memory",
+        "initial_solver": {
+          "solver": "Random"
+        },
+        "name": "LM"
+      },
+      "sub_solver":
+      {
+        "solver": "Memory",
+        "initial_solver": {
+          "solver": "Greedy",
+          "picker": "Regret",
+          "name": "Greedy-Regret"
+        },
+        "name": "LM"
+      },
+      "time": 14376.09,
+      "perturb_min": 0.05,
+      "perturb_max": 0.2,
+      "name": "ILS2a"
+    }
+  ],
+  "iterations": 10,
+  "time_multiplier": 1000,
+  "table": "table_extended",
+  "plots": "plots_extended",
+  "plots_scale": 0.002
+}
