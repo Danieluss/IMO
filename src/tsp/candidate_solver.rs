@@ -87,12 +87,31 @@ impl Solver<TSPInstance, TSPSolution> for CandidateSolver {
                             best_pair = (i, vertex_next);
                         }
                     } else {
+                        let i_prev;
+                        let j_prev;
+                        if solution.cycle[i] == 0 {
+                            i_prev = (solution.order[i]+solution.perm_a.len()-1)%solution.perm_a.len();
+                            j_prev = (solution.order[j]+solution.perm_a.len()-1)%solution.perm_a.len();
+                        } else {
+                            i_prev = (solution.order[i]+solution.perm_b.len()-1)%solution.perm_b.len();
+                            j_prev = (solution.order[j]+solution.perm_b.len()-1)%solution.perm_b.len();
+                        }
                         score = edges_transition.score_explicit(solution.cycle[i], solution.order[i], solution.order[j], instance, &solution);
                         match score {
                             Some(x) => {
                                 if score.unwrap() < min_score {
                                     min_score = score.unwrap();
                                     best_pair = (i, j);
+                                }
+                            }
+                            None => {}
+                        }
+                        let nscore = edges_transition.score_explicit(solution.cycle[i], solution.order[i_prev], solution.order[j_prev], instance, &solution);
+                        match nscore {
+                            Some(x) => {
+                                if score.unwrap() < min_score {
+                                    min_score = score.unwrap();
+                                    best_pair = (i_prev, j_prev);
                                 }
                             }
                             None => {}
@@ -104,7 +123,7 @@ impl Solver<TSPInstance, TSPSolution> for CandidateSolver {
                 improvement_flag = true;
                 let (i, j) = best_pair;
                 // println!("{} {} {} {}", solution.cycle[i], solution.order[i], solution.cycle[j], solution.order[j]);
-                let s1 = instance.eval(&solution);
+                // let s1 = instance.eval(&solution);
                 if solution.cycle[i] != solution.cycle[j] {
                     if solution.cycle[i] == 0 {
                         inter_cycle_transition.apply_explicit(solution.order[i], solution.order[j], &mut solution)
@@ -114,15 +133,15 @@ impl Solver<TSPInstance, TSPSolution> for CandidateSolver {
                 } else {
                     edges_transition.apply_explicit(solution.cycle[i], solution.order[i], solution.order[j], &mut solution)
                 }
-                for i in 0..instance.dimension {
-                    if solution.cycle[i] == 0 {
-                        assert_eq!(i, solution.perm_a[solution.order[i]]);
-                    } else {
-                        assert_eq!(i, solution.perm_b[solution.order[i]]);
-                    }
-                }
-                let s2 = instance.eval(&solution);
-                assert_eq!((s2-s1) as isize, min_score as isize);
+                // for i in 0..instance.dimension {
+                //     if solution.cycle[i] == 0 {
+                //         assert_eq!(i, solution.perm_a[solution.order[i]]);
+                //     } else {
+                //         assert_eq!(i, solution.perm_b[solution.order[i]]);
+                //     }
+                // }
+                // let s2 = instance.eval(&solution);
+                // assert_eq!((s2-s1) as isize, min_score as isize);
             }
         }
         solution
