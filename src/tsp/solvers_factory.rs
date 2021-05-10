@@ -80,7 +80,7 @@ impl SolversFactory {
                 config["time"].as_f32().unwrap(),
                 config["perturb_min"].as_f32().unwrap(),
                 config["perturb_max"].as_f32().unwrap(),
-                transitions.remove("Vertex").unwrap()
+                || vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]
             ))
         } else if config["solver"] == "IteratedConstruction" {
             let mut transitions: HashMap<&str, fn() -> Vec<Box<dyn Transition>>> = HashMap::new();
@@ -92,7 +92,7 @@ impl SolversFactory {
                 config["time"].as_f32().unwrap(),
                 config["perturb_min"].as_f32().unwrap(),
                 config["perturb_max"].as_f32().unwrap(),
-                transitions.remove("Vertex").unwrap()
+                || vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]
             ))
         } else {
             Box::new(RandomSolver)

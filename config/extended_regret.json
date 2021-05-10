@@ -9,7 +9,9 @@
       "sub_solver": {
         "solver": "Memory",
         "initial_solver": {
-          "solver": "Random"
+          "solver": "Greedy",
+          "picker": "Regret",
+          "name": "Greedy-Regret"
         },
         "name": "LM"
       },
@@ -21,7 +23,9 @@
       "initial_solver": {
         "solver": "Memory",
         "initial_solver": {
-          "solver": "Random"
+          "solver": "Greedy",
+          "picker": "Regret",
+          "name": "Greedy-Regret"
         },
         "name": "LM"
       },
@@ -42,7 +46,9 @@
       "initial_solver": {
         "solver": "Memory",
         "initial_solver": {
-          "solver": "Random"
+          "solver": "Greedy",
+          "picker": "Regret",
+          "name": "Greedy-Regret"
         },
         "name": "LM"
       },
@@ -61,7 +67,9 @@
       "initial_solver": {
         "solver": "Memory",
         "initial_solver": {
-          "solver": "Random"
+          "solver": "Greedy",
+          "picker": "Regret",
+          "name": "Greedy-Regret"
         },
         "name": "LM"
       },
@@ -75,7 +83,7 @@
         },
         "name": "LM"
       },
-      "time": 14376.09,
+      "time": 25202.9,
       "perturb_min": 0.05,
       "perturb_max": 0.3,
       "name": "ILS2a"
@@ -83,7 +91,7 @@
   ],
   "iterations": 10,
   "time_multiplier": 1000,
-  "table": "table_extended",
-  "plots": "plots_extended",
+  "table": "table_extended_regret",
+  "plots": "plots_extended_regret",
   "plots_scale": 0.002
 }

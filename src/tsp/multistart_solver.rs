@@ -26,7 +26,6 @@ impl Solver<TSPInstance, TSPSolution> for MultiStartSolver {
             if it_score < best_solution.0 {
                 best_solution = (it_score, it_solution)
             }
-            println!("{} {}", i, best_solution.0)
         }
         best_solution.1
     }
