@@ -6,6 +6,12 @@ pub struct RegretPicker;
 
 impl Picker for RegretPicker {
     fn add_both(&self, partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
+        while (partial_path_a.vec.len() < partial_path_b.vec.len()) {
+            self.add(partial_path_a, partial_path_b, visited);
+        }
+        while (partial_path_a.vec.len() > partial_path_b.vec.len()) {
+            self.add(partial_path_b, partial_path_a, visited);
+        }
         self.add(partial_path_a, partial_path_b, visited);
         self.add(partial_path_b, partial_path_a, visited);
     }

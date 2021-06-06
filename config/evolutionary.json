@@ -1,0 +1,33 @@
+{
+  "instances": [
+    "kroA200.tsp",
+    "kroB200.tsp"
+  ],
+  "algorithms": [
+    {
+      "solver": "Evolutionary",
+      "local_solver": {
+        "solver": "Memory",
+        "initial_solver": {
+          "solver": "Random",
+          "name": "Greedy-Regret"
+        },
+        "name": "LM"
+      },
+      "construction_solver": {
+        "solver": "Greedy",
+        "picker": "Regret",
+        "name": "Greedy-Regret"
+      },
+      "time": 18376.09,
+      "population_size": 16,
+      "steps_to_mutation": 80,
+      "name": "HEAa"
+    }
+  ],
+  "iterations": 10,
+  "time_multiplier": 1000,
+  "table": "table_evo",
+  "plots": "plots_evo",
+  "plots_scale": 0.002
+}

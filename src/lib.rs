@@ -30,6 +30,7 @@ pub mod tsp {
     pub mod candidate_solver;
     pub mod memory_solver;
     pub mod multistart_solver;
+    pub mod evolutionary_solver;
     pub mod iterated_solver;
 }
 pub mod primes {

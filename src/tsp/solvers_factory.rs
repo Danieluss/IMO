@@ -21,6 +21,7 @@ use crate::tsp::solver::GreedySolver;
 use crate::tsp::candidate_solver::CandidateSolver;
 use crate::tsp::memory_solver::MemorySolver;
 use crate::tsp::iterated_solver::{IteratedSolver, IteratedConstructionSolver};
+use crate::tsp::evolutionary_solver::EvolutionarySolver;
 
 pub struct SolversFactory;
 
@@ -94,6 +95,25 @@ impl SolversFactory {
                 config["perturb_max"].as_f32().unwrap(),
                 || vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]
             ))
+
+            // initial_solver: Box<dyn Solver<TSPInstance, TSPSolution>>,
+            // time: f32,
+            // population_size: usize,
+            // transition: fn() -> Vec<Box<dyn Transition>>
+        } else if config["solver"] == "Evolutionary" {
+            let mut transitions: HashMap<&str, fn() -> Vec<Box<dyn Transition>>> = HashMap::new();
+            transitions.insert("Vertex", || {vec![Box::new(InterCycleTransition{}), Box::new(VertexTransition{})]});
+            transitions.insert("Edges", || {vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]});
+            Box::new(EvolutionarySolver::new(
+                SolversFactory::create_from_json(&config["local_solver"]),
+                SolversFactory::create_from_json(&config["construction_solver"]),
+                config["time"].as_f32().unwrap(),
+                config["population_size"].as_usize().unwrap(),
+                config["steps_to_mutation"].as_usize().unwrap(),
+                || vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]
+            ))
+        }  else if config["solver"] == "Convexity" {
+
         } else {
             Box::new(RandomSolver)
         }

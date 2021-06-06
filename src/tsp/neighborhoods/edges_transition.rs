@@ -94,6 +94,9 @@ impl Transition for EdgesTransition {
             let tmp = solution.order[vertex_b];
             solution.order[vertex_b] = solution.order[vertex_a];
             solution.order[vertex_a] = tmp;
+            if solution.order[vertex_a] != b || solution.order[vertex_b] != a {
+                println!("X");
+            }
             assert_eq!(solution.order[vertex_a], b);
             assert_eq!(solution.order[vertex_b], a);
             let t = perm[a]; perm[a] = perm[b]; perm[b] = t;

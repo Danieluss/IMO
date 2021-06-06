@@ -6,7 +6,31 @@ use std::io::prelude::*;
 use json;
 
 use rand::Rng;
+use std::cmp::Ordering;
 
+#[derive(PartialEq)]
+pub struct MinFloat(pub f32);
+
+impl Eq for MinFloat {}
+
+impl PartialOrd for MinFloat {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        other.0.partial_cmp(&self.0)
+    }
+}
+
+impl Ord for MinFloat {
+    fn cmp(&self, other: &MinFloat) -> Ordering {
+        self.partial_cmp(other).unwrap()
+    }
+}
+
+pub fn random_combination(n: usize) -> (usize, usize) {
+    let mut rng = rand::thread_rng();
+    let x_1 = rng.gen_range(0..n);
+    let x_2 = (rng.gen_range(1..n) + x_1) % n;
+    return (x_1, x_2)
+}
 
 pub fn random_permutation(n: usize) -> Vec<usize> {
     let mut rng = rand::thread_rng();
