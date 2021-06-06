@@ -22,6 +22,11 @@ use crate::tsp::candidate_solver::CandidateSolver;
 use crate::tsp::memory_solver::MemorySolver;
 use crate::tsp::iterated_solver::{IteratedSolver, IteratedConstructionSolver};
 use crate::tsp::evolutionary_solver::EvolutionarySolver;
+use crate::tsp::convexity_checker::ConvexityChecker;
+use crate::tsp::similarities::edge_similarity::EdgeSimilarity;
+use crate::tsp::similarities::vertex_similarity::VertexSimilarity;
+use crate::tsp::similarity::Similarity;
+use crate::tsp::custom_solver::CustomSolver;
 
 pub struct SolversFactory;
 
@@ -39,28 +44,28 @@ impl SolversFactory {
             Box::new(GreedySolver::new(picker))
         } else if config["solver"] == "Local" {
             let mut transitions: HashMap<&str, fn() -> Vec<Box<dyn Transition>>> = HashMap::new();
-            transitions.insert("Vertex", || {vec![Box::new(InterCycleTransition{}), Box::new(VertexTransition{})]});
-            transitions.insert("Edges", || {vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]});
+            transitions.insert("Vertex", || { vec![Box::new(InterCycleTransition {}), Box::new(VertexTransition {})] });
+            transitions.insert("Edges", || { vec![Box::new(InterCycleTransition {}), Box::new(EdgesTransition {})] });
             if config["type"] == "Greedy" {
                 Box::new(LocalGreedySolver::new(
                     SolversFactory::create_from_json(&config["initial_solver"]),
-                    transitions.remove(config["transition"].as_str().unwrap()).unwrap()
+                    transitions.remove(config["transition"].as_str().unwrap()).unwrap(),
                 ))
             } else if config["type"] == "Steepest" {
                 Box::new(LocalSteepestSolver::new(
                     SolversFactory::create_from_json(&config["initial_solver"]),
-                    transitions.remove(config["transition"].as_str().unwrap()).unwrap()
+                    transitions.remove(config["transition"].as_str().unwrap()).unwrap(),
                 ))
             } else {
                 Box::new(LocalRandomWalker::new(
                     SolversFactory::create_from_json(&config["initial_solver"]),
-                    transitions.remove(config["transition"].as_str().unwrap()).unwrap()
+                    transitions.remove(config["transition"].as_str().unwrap()).unwrap(),
                 ))
             }
         } else if config["solver"] == "Candidate" {
             Box::new(CandidateSolver::new(
                 config["num_neighbors"].as_usize().unwrap(),
-                SolversFactory::create_from_json(&config["initial_solver"])
+                SolversFactory::create_from_json(&config["initial_solver"]),
             ))
         } else if config["solver"] == "Memory" {
             Box::new(MemorySolver::new(
@@ -69,31 +74,31 @@ impl SolversFactory {
         } else if config["solver"] == "MSLS" {
             Box::new(MultiStartSolver::new(
                 SolversFactory::create_from_json(&config["sub_solver"]),
-            config["no_iterations"].as_usize().unwrap()
+                config["no_iterations"].as_usize().unwrap(),
             ))
         } else if config["solver"] == "Iterated" {
             let mut transitions: HashMap<&str, fn() -> Vec<Box<dyn Transition>>> = HashMap::new();
-            transitions.insert("Vertex", || {vec![Box::new(InterCycleTransition{}), Box::new(VertexTransition{})]});
-            transitions.insert("Edges", || {vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]});
+            transitions.insert("Vertex", || { vec![Box::new(InterCycleTransition {}), Box::new(VertexTransition {})] });
+            transitions.insert("Edges", || { vec![Box::new(InterCycleTransition {}), Box::new(EdgesTransition {})] });
             Box::new(IteratedSolver::new(
                 SolversFactory::create_from_json(&config["initial_solver"]),
                 SolversFactory::create_from_json(&config["sub_solver"]),
                 config["time"].as_f32().unwrap(),
                 config["perturb_min"].as_f32().unwrap(),
                 config["perturb_max"].as_f32().unwrap(),
-                || vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]
+                || vec![Box::new(InterCycleTransition {}), Box::new(EdgesTransition {})],
             ))
         } else if config["solver"] == "IteratedConstruction" {
             let mut transitions: HashMap<&str, fn() -> Vec<Box<dyn Transition>>> = HashMap::new();
-            transitions.insert("Vertex", || {vec![Box::new(InterCycleTransition{}), Box::new(VertexTransition{})]});
-            transitions.insert("Edges", || {vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]});
+            transitions.insert("Vertex", || { vec![Box::new(InterCycleTransition {}), Box::new(VertexTransition {})] });
+            transitions.insert("Edges", || { vec![Box::new(InterCycleTransition {}), Box::new(EdgesTransition {})] });
             Box::new(IteratedConstructionSolver::new(
                 SolversFactory::create_from_json(&config["initial_solver"]),
                 SolversFactory::create_from_json(&config["sub_solver"]),
                 config["time"].as_f32().unwrap(),
                 config["perturb_min"].as_f32().unwrap(),
                 config["perturb_max"].as_f32().unwrap(),
-                || vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]
+                || vec![Box::new(InterCycleTransition {}), Box::new(EdgesTransition {})],
             ))
 
             // initial_solver: Box<dyn Solver<TSPInstance, TSPSolution>>,
@@ -101,19 +106,36 @@ impl SolversFactory {
             // population_size: usize,
             // transition: fn() -> Vec<Box<dyn Transition>>
         } else if config["solver"] == "Evolutionary" {
-            let mut transitions: HashMap<&str, fn() -> Vec<Box<dyn Transition>>> = HashMap::new();
-            transitions.insert("Vertex", || {vec![Box::new(InterCycleTransition{}), Box::new(VertexTransition{})]});
-            transitions.insert("Edges", || {vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]});
             Box::new(EvolutionarySolver::new(
                 SolversFactory::create_from_json(&config["local_solver"]),
                 SolversFactory::create_from_json(&config["construction_solver"]),
                 config["time"].as_f32().unwrap(),
                 config["population_size"].as_usize().unwrap(),
                 config["steps_to_mutation"].as_usize().unwrap(),
-                || vec![Box::new(InterCycleTransition{}), Box::new(EdgesTransition{})]
+                || vec![Box::new(InterCycleTransition {}), Box::new(EdgesTransition {})],
             ))
-        }  else if config["solver"] == "Convexity" {
-
+        } else if config["solver"] == "Custom" {
+            Box::new(CustomSolver::new(
+                SolversFactory::create_from_json(&config["local_solver"]),
+                SolversFactory::create_from_json(&config["construction_solver"]),
+                config["time"].as_f32().unwrap(),
+                config["no_populations"].as_usize().unwrap(),
+                config["population_size"].as_usize().unwrap(),
+                config["steps_to_mutation"].as_usize().unwrap(),
+                || vec![Box::new(InterCycleTransition {}), Box::new(EdgesTransition {})],
+            ))
+        } else if config["solver"] == "Convexity" {
+            let similarity: Box<dyn Similarity> = if config["similarity"] == "Edge" {
+                Box::new(EdgeSimilarity::new())
+            } else {
+                Box::new(VertexSimilarity::new())
+            };
+            Box::new(ConvexityChecker::new(
+                SolversFactory::create_from_json(&config["best_solver"]),
+                SolversFactory::create_from_json(&config["local_solver"]),
+                config["no_solutions"].as_usize().unwrap(),
+                similarity,
+            ))
         } else {
             Box::new(RandomSolver)
         }

@@ -26,6 +26,10 @@ impl Picker for CycleSimultaneousPicker {
         partial_path_a.vec.insert(cost_a[min_pair.1].1, min_pair.1);
         partial_path_b.vec.insert(cost_b[min_pair.2].1, min_pair.2);
     }
+
+    fn add(&self, partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
+        unimplemented!()
+    }
 }
 
 impl CycleSimultaneousPicker {

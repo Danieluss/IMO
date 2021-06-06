@@ -19,14 +19,15 @@
         "name": "Greedy-Regret"
       },
       "time": 14376.09,
-      "population_size": 16,
-      "steps_to_mutation": 80,
+      "population_size": 20,
+      "no_populations": 2,
+      "steps_to_mutation": 32,
       "name": "custom"
     }
   ],
   "iterations": 10,
   "time_multiplier": 1000,
-  "table": "table_evo",
-  "plots": "plots_evo",
+  "table": "table_custom",
+  "plots": "plots_custom",
   "plots_scale": 0.002
 }

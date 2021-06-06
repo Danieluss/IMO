@@ -13,11 +13,16 @@ pub mod tsp {
     pub mod solvers_factory;
     pub mod partial_path;
     pub mod picker;
+    pub mod similarity;
     pub mod pickers {
         pub mod nearest_picker;
         pub mod cycle_picker;
         pub mod cycle_simultaneous_picker;
         pub mod regret_picker;
+    }
+    pub mod similarities {
+        pub mod edge_similarity;
+        pub mod vertex_similarity;
     }
     pub mod neighborhoods {
         pub mod neighborhood;
@@ -27,10 +32,12 @@ pub mod tsp {
         pub mod vertex_transition;
     }
     pub mod local_solvers;
+    pub mod custom_solver;
     pub mod candidate_solver;
     pub mod memory_solver;
     pub mod multistart_solver;
     pub mod evolutionary_solver;
+    pub mod convexity_checker;
     pub mod iterated_solver;
 }
 pub mod primes {

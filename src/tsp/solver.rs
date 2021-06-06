@@ -61,7 +61,12 @@ impl Solver<TSPInstance, TSPSolution> for GreedySolver {
             instance: &instance,
             vec: vec![max.2],
         };
-
+        while (partial_a.vec.len() < partial_b.vec.len()) {
+            self.picker.add(&mut partial_a, &mut partial_b, &mut visited);
+        }
+        while (partial_b.vec.len() > partial_a.vec.len()) {
+            self.picker.add(&mut partial_b, &mut partial_a, &mut visited);
+        }
         while partial_a.vec.len() + partial_b.vec.len() < n {
             self.picker.add_both(&mut partial_a, &mut partial_b, &mut visited);
         }
@@ -89,6 +94,13 @@ impl Solver<TSPInstance, TSPSolution> for GreedySolver {
             instance: &instance,
             vec: solution.perm_b,
         };
+
+        while (partial_a.vec.len() < partial_b.vec.len()) {
+            self.picker.add(&mut partial_a, &mut partial_b, &mut visited);
+        }
+        while (partial_b.vec.len() < partial_a.vec.len()) {
+            self.picker.add(&mut partial_b, &mut partial_a, &mut visited);
+        }
 
         while partial_a.vec.len() + partial_b.vec.len() < n {
             self.picker.add_both(&mut partial_a, &mut partial_b, &mut visited);

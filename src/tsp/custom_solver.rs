@@ -48,7 +48,7 @@ impl PartialOrd for Candidate {
 pub struct Population {
     pop_registry: Vec<Candidate>,
     pop_queue: BinaryHeap<(MinFloat, usize)>,
-    score_map: HashMap<usize, usize>
+    score_map: HashMap<usize, usize>,
 }
 
 impl Population {
@@ -60,7 +60,7 @@ impl Population {
         Population {
             pop_registry,
             pop_queue,
-            score_map
+            score_map,
         }
     }
 
@@ -83,6 +83,7 @@ impl Population {
 
     pub fn replace(&mut self, candidate: Candidate) {
         let popped_candidate = self.pop_queue.pop().unwrap();
+        self.score_map.remove(&(self.pop_registry[popped_candidate.1].distance as usize));
         self.pop_registry[popped_candidate.1] = candidate;
         self.pop_queue.push((MinFloat(self.pop_registry[popped_candidate.1].distance.clone()), popped_candidate.1));
         self.score_map.insert(self.pop_registry[popped_candidate.1].distance.clone() as usize, popped_candidate.1);
@@ -116,28 +117,39 @@ impl Population {
             self.score_map.insert(self.pop_registry[i].distance as usize, i);
         }
     }
+
+    pub fn join(&mut self, population: &mut Population) {
+        for i in 0..population.pop_registry.len() {
+            if !self.has(&population.pop_registry[0]) {
+                self.pop_registry.push(population.pop_registry.remove(0));
+            }
+        }
+    }
 }
 
-pub struct EvolutionarySolver {
+pub struct CustomSolver {
     local_solver: Box<dyn Solver<TSPInstance, TSPSolution>>,
     construction_solver: Box<dyn Solver<TSPInstance, TSPSolution>>,
     time: f32,
+    no_populations: usize,
     population_size: usize,
     steps_to_mutation: usize,
     transition: fn() -> Vec<Box<dyn Transition>>,
 }
 
-impl EvolutionarySolver {
+impl CustomSolver {
     pub fn new(local_solver: Box<dyn Solver<TSPInstance, TSPSolution>>,
                construction_solver: Box<dyn Solver<TSPInstance, TSPSolution>>,
                time: f32,
+               no_populations: usize,
                population_size: usize,
                steps_to_mutation: usize,
-               transition: fn() -> Vec<Box<dyn Transition>>) -> EvolutionarySolver {
-        EvolutionarySolver {
+               transition: fn() -> Vec<Box<dyn Transition>>) -> CustomSolver {
+        CustomSolver {
             local_solver,
             construction_solver,
             time,
+            no_populations,
             population_size,
             steps_to_mutation,
             transition,
@@ -204,7 +216,7 @@ impl EvolutionarySolver {
             }
         }
 
-        let mut solution = TSPSolution{ perm_a: new_perm_a, perm_b: new_perm_b, cycle: vec![], order: vec![] };
+        let mut solution = TSPSolution { perm_a: new_perm_a, perm_b: new_perm_b, cycle: vec![], order: vec![] };
         let mut solution = self.construction_solver.solve_s(0, instance, solution);
         solution.reorder();
         let mut solution = self.local_solver.solve_s(0, instance, solution);
@@ -260,8 +272,8 @@ impl EvolutionarySolver {
         for candidate in population.pop_registry.iter_mut() {
             let inbreds = candidate.inbred_count as f32;
             let total = candidate.cross_count as f32;
-            if candidate.cross_count != 0 && candidate.inbred_count != 0{
-                let mx =  if inbreds/total + 0.1 < 0.8 {inbreds/total + 0.1} else {0.8};
+            if candidate.cross_count != 0 && candidate.inbred_count != 0 {
+                let mx = if inbreds / total + 0.1 < 0.8 { inbreds / total + 0.1 } else { 0.8 };
                 let perturb_size = ((instance.dimension as f32) * thread_rng().gen_range(0.1..mx)) as usize / 2;
                 let solution = self.perturb(instance, candidate.solution.clone(), neighborhood, perturb_size);
                 let solution = self.construction_solver.solve_s(0, instance, solution);
@@ -278,7 +290,7 @@ impl EvolutionarySolver {
 }
 
 
-impl Solver<TSPInstance, TSPSolution> for EvolutionarySolver {
+impl Solver<TSPInstance, TSPSolution> for CustomSolver {
     fn solve(&self, _: usize, instance: &TSPInstance) -> TSPSolution {
         println!("=====");
         let EMPTY = TSPSolution {
@@ -289,43 +301,97 @@ impl Solver<TSPInstance, TSPSolution> for EvolutionarySolver {
         };
         let start = Instant::now();
 
-        let mut population = Population::new();
-        let start_each = instance.dimension / self.population_size;
-        let mut best_solution: (f32, usize) = (f32::INFINITY, 0);
-        for start_i in 0..self.population_size {
-            let candidate = self.new_candidate(start_i * start_each, instance);
-            if candidate.distance < best_solution.0 {
-                best_solution = (instance.eval(&candidate.solution), start_i);
-                println!(">> {}", best_solution.0);
+        let mut populations = vec![];
+        let mut best_solution: (f32, (usize, usize)) = (f32::INFINITY, (0, 0));
+        for i in 0..self.no_populations {
+            println!("New population");
+            let mut population = Population::new();
+
+            let start_each = instance.dimension / self.no_populations;
+            let step_each = instance.dimension / self.no_populations / self.population_size;
+            for start_i in 0..self.population_size / self.no_populations {
+                let candidate = self.new_candidate(i * start_each + start_i * step_each, instance);
+                if candidate.distance < best_solution.0 {
+                    best_solution = (instance.eval(&candidate.solution), (i, start_i));
+                    println!(">> {}", best_solution.0);
+                }
+                population.register(candidate);
             }
-            population.register(candidate);
+
+            populations.push(population);
         }
-        let mut best_solution = (best_solution.0, population.get(best_solution.1).solution.clone());
+
+        let mut best_solution = (best_solution.0, populations[best_solution.1.0]
+            .get(best_solution.1.0).solution.clone());
         let mut neighborhood = Neighborhood::new((self.transition)(), &best_solution.1, true);
+        let island_steps = 4;
         while start.elapsed().as_secs_f32() * 1000.0 < self.time {
-            for i in 0..self.steps_to_mutation {
-                match self.cross_over(random_combination(self.population_size), instance, &mut population) {
-                    Some(candidate) => {
-                        if population.has(&candidate) {
-                            population.inbred(&candidate);
-                        } else if population.should_include(&candidate) {
-                            println!("{} {}", candidate.distance, population.threshold());
-                            if candidate.distance < best_solution.0 {
-                                best_solution = (instance.eval(&candidate.solution), candidate.solution.clone());
-                                println!(">> {}", best_solution.0);
+            for population_i in 0..populations.len() {
+                let population = &mut populations[population_i];
+                for island_step in 0..island_steps {
+                    if population.size() * (population.size() - 1) / 2 < self.steps_to_mutation {
+                        for parent_i in 0..population.size() - 1 {
+                            for parent_j in parent_i + 1..population.size() {
+                                match self.cross_over((parent_i, parent_j), instance, population) {
+                                    Some(candidate) => {
+                                        if population.has(&candidate) {
+                                            population.inbred(&candidate);
+                                        } else if population.should_include(&candidate) {
+                                            println!("{} {}", candidate.distance, population.threshold());
+                                            if candidate.distance < best_solution.0 {
+                                                best_solution = (instance.eval(&candidate.solution), candidate.solution.clone());
+                                                println!(">> {}", best_solution.0);
+                                            }
+                                            population.replace(candidate);
+                                        }
+                                    }
+                                    None => {}
+                                }
+                                if start.elapsed().as_secs_f32() >= self.time {
+                                    return best_solution.1;
+                                }
                             }
-                            population.replace(candidate);
+                        }
+                    } else {
+                        for step_i in 0..self.steps_to_mutation {
+                            match self.cross_over(random_combination(population.size()), instance, population) {
+                                Some(candidate) => {
+                                    if population.has(&candidate) {
+                                        population.inbred(&candidate);
+                                    } else if population.should_include(&candidate) {
+                                        println!("{} {}", candidate.distance, population.threshold());
+                                        if candidate.distance < best_solution.0 {
+                                            best_solution = (instance.eval(&candidate.solution), candidate.solution.clone());
+                                            println!(">> {}", best_solution.0);
+                                        }
+                                        population.replace(candidate);
+                                    }
+                                }
+                                None => {}
+                            }
+                            if start.elapsed().as_secs_f32() >= self.time {
+                                return best_solution.1;
+                            }
                         }
                     }
-                    None => {}
+                    if island_step != island_steps - 1 {
+                        println!("Mutating");
+                        self.mutate(instance, population, &mut neighborhood);
+                    }
                 }
-                if start.elapsed().as_secs_f32() >= self.time {
-                    return best_solution.1;
-                }
-
             }
-            println!("Mutating");
-            self.mutate(instance, &mut population, &mut neighborhood);
+            println!("Joining");
+            if populations.len() / 2 > 0 {
+                let half_index = populations.len() / 2;
+                for population_i in 0..half_index {
+                    let mut population = populations.remove(half_index);
+                    populations[population_i].join(&mut population);
+                    while populations[population_i].size() < half_index * 2 {
+                        populations[population_i].register(self.new_candidate(rand::thread_rng().gen_range(0..instance.dimension), instance))
+                    }
+                    populations[population_i].rehash();
+                }
+            }
         }
 
         best_solution.1

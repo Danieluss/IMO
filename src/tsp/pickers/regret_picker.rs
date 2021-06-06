@@ -6,23 +6,14 @@ pub struct RegretPicker;
 
 impl Picker for RegretPicker {
     fn add_both(&self, partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
-        while (partial_path_a.vec.len() < partial_path_b.vec.len()) {
-            self.add(partial_path_a, partial_path_b, visited);
-        }
-        while (partial_path_a.vec.len() > partial_path_b.vec.len()) {
-            self.add(partial_path_b, partial_path_a, visited);
-        }
         self.add(partial_path_a, partial_path_b, visited);
         self.add(partial_path_b, partial_path_a, visited);
     }
-}
-
-impl RegretPicker {
-    fn add(&self, partial_path: &mut PartialPath, other_partial_path: &PartialPath, visited: &mut Vec<bool>) {
+    fn add(&self, partial_path: &mut PartialPath, other_partial_path: &mut PartialPath, visited: &mut Vec<bool>) {
         let n = partial_path.instance.dimension;
         if partial_path.vec.len() < 3 {
             let picker = CyclePicker::new();
-            picker.add(partial_path, visited);
+            picker._add(partial_path, visited);
             return;
         }
         let mut max_regret = (f32::MIN, 0, 0);
@@ -46,7 +37,7 @@ impl RegretPicker {
                     }
                 }
                 if min2 - min1.0 > max_regret.0 {
-                    max_regret = (min2-min1.0, min1.1, j);
+                    max_regret = (min2 - min1.0, min1.1, j);
                 }
             }
         }

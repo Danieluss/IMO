@@ -5,13 +5,17 @@ pub struct NearestPicker;
 
 impl Picker for NearestPicker {
     fn add_both(&self, partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
-        self.add(partial_path_a, visited);
-        self.add(partial_path_b, visited);
+        self._add(partial_path_a, visited);
+        self._add(partial_path_b, visited);
+    }
+
+    fn add(&self, partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
+        unimplemented!()
     }
 }
 
 impl NearestPicker {
-    fn add(&self, partial_path: &mut PartialPath<'_>, visited: &mut std::vec::Vec<bool>) {
+    fn _add(&self, partial_path: &mut PartialPath<'_>, visited: &mut std::vec::Vec<bool>) {
         let mut min = (f32::MAX, 0);
         let n = partial_path.instance.dimension;
         for i in 0..n {

@@ -5,8 +5,12 @@ pub struct CyclePicker;
 
 impl Picker for CyclePicker {
     fn add_both(&self, partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
-        self.add(partial_path_a, visited);
-        self.add(partial_path_b, visited);
+        self._add(partial_path_a, visited);
+        self._add(partial_path_b, visited);
+    }
+
+    fn add(&self, partial_path_a: &mut PartialPath, partial_path_b: &mut PartialPath, visited: &mut Vec<bool>) {
+        unimplemented!()
     }
 }
 
@@ -14,7 +18,7 @@ impl CyclePicker {
     pub fn new() -> CyclePicker{
         CyclePicker
     }
-    pub fn add(&self, partial_path: &mut PartialPath, visited: &mut Vec<bool>) {
+    pub fn _add(&self, partial_path: &mut PartialPath, visited: &mut Vec<bool>) {
         let n = partial_path.instance.dimension;
         let mut min = (f32::MAX, 0, 0);
         for i in 0..partial_path.vec.len() {

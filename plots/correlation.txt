@@ -1,0 +1,10 @@
+avg
+kroa_edge, -0.74 1.74e-170
+krob_edge, -0.71 1.88e-151
+kroa_vertex, -0.53 1.73e-72
+krob_vertex, -0.49 9.88e-63
+best1
+kroa_edge, -0.11 3.35e-04
+krob_edge, -0.17 2.70e-08
+kroa_vertex, -0.13 2.36e-05
+krob_vertex, -0.027 3.95e-01

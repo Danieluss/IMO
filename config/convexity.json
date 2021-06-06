@@ -1,0 +1,37 @@
+{
+  "instances": [
+    "kroA200.tsp",
+    "kroB200.tsp"
+  ],
+  "algorithms": [
+    {
+      "solver": "Convexity",
+      "similarity": "Vertex",
+      "local_solver": {
+        "solver": "Memory",
+        "initial_solver": {
+          "solver": "Random"
+        }
+      },
+      "no_solutions": 5,
+      "name": "VertexConvexity"
+    },
+    {
+      "solver": "Convexity",
+      "similarity": "Edge",
+      "local_solver": {
+        "solver": "Memory",
+        "initial_solver": {
+          "solver": "Random"
+        }
+      },
+      "no_solutions": 5,
+      "name": "EdgeConvexity"
+    }
+  ],
+  "iterations": 1,
+  "time_multiplier": 1000,
+  "table": "table_conv",
+  "plots": "plots_conv",
+  "plots_scale": 0.002
+}

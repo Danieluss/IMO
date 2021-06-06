@@ -1,0 +1,79 @@
+{
+  "instances": [
+    "kroA200.tsp",
+    "kroB200.tsp"
+  ],
+  "algorithms": [
+    {
+      "solver": "Convexity",
+      "similarity": "Vertex",
+      "best_solver": {
+        "solver": "Evolutionary",
+        "local_solver": {
+          "solver": "Memory",
+          "initial_solver": {
+            "solver": "Random",
+            "name": "Greedy-Regret"
+          },
+          "name": "LM"
+        },
+        "construction_solver": {
+          "solver": "Greedy",
+          "picker": "Regret",
+          "name": "Greedy-Regret"
+        },
+        "time": 14376.09,
+        "population_size": 16,
+        "steps_to_mutation": 80,
+        "name": "HEAa"
+      },
+      "local_solver":
+      {
+        "solver": "Memory",
+        "initial_solver": {
+          "solver": "Random"
+        }
+      },
+      "no_solutions": 1000,
+      "name": "VertexConvexity"
+    },
+    {
+      "solver": "Convexity",
+      "similarity": "Edge",
+      "local_solver":
+      {
+        "solver": "Memory",
+        "initial_solver": {
+          "solver": "Random"
+        }
+      },
+      "best_solver": {
+        "solver": "Evolutionary",
+        "local_solver": {
+          "solver": "Memory",
+          "initial_solver": {
+            "solver": "Random",
+            "name": "Greedy-Regret"
+          },
+          "name": "LM"
+        },
+        "construction_solver": {
+          "solver": "Greedy",
+          "picker": "Regret",
+          "name": "Greedy-Regret"
+        },
+        "time": 14376.09,
+        "population_size": 16,
+        "steps_to_mutation": 80,
+        "name": "HEAa"
+      },
+      "no_solutions": 1000,
+      "name": "EdgeConvexity"
+    }
+  ],
+  "iterations": 1,
+  "time_multiplier": 1000,
+  "table": "table_conv",
+  "plots": "plots_conv",
+  "plots_scale": 0.002
+}
